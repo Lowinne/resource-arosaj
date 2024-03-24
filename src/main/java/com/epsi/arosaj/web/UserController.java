@@ -24,8 +24,6 @@ import java.util.List;
 @RequestMapping("/api/user")
 public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
-    @Autowired
-    private UserRepository userRepository;
 
     @Autowired
     private UserService userService;
