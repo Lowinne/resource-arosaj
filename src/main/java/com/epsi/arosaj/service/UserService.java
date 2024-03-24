@@ -2,6 +2,7 @@ package com.epsi.arosaj.service;
 
 import com.epsi.arosaj.persistence.model.User;
 import com.epsi.arosaj.persistence.repository.UserRepository;
+import com.epsi.arosaj.web.exception.FindAnotherPseudoException;
 import com.epsi.arosaj.web.exception.UserAlreadyExistsException;
 import com.epsi.arosaj.web.exception.UserIdMismatchException;
 import com.epsi.arosaj.web.exception.UserNotFoundException;
@@ -52,7 +53,12 @@ public class UserService {
         logger.info("create : " + user.toString());
 
         if (userRepository.existsById(user.getId())) {
-            throw new UserAlreadyExistsException("Un utilisateur avec l'ID " + user.getId() + " existe déjà");
+            logger.info("Un utilisateur avec l'ID " + user.getId() + " existe déjà");
+            user.setId(getFreeId());
+        }
+
+        if (!findByPseudo(user.getPseudo()).isEmpty()){
+            throw new FindAnotherPseudoException("Entrer un autre pseudo");
         }
 
         return userRepository.save(user);
