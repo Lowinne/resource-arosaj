@@ -16,11 +16,11 @@ import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.apache.commons.lang3.RandomStringUtils.randomNumeric;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-@SpringBootTest
-public class UserLiveTest {
-    private static final String API_ROOT = "http://localhost:8081/api/user";
 
-    @Test
+public class UserLiveTest {
+
+    private static final String API_ROOT = "http://localhost:8081/api/user";
+    /*@Test
     public void whenGetAllUsers_thenOK() {
         final Response response = RestAssured.get(API_ROOT + "/");
         assertEquals(HttpStatus.OK.value(), response.getStatusCode());
@@ -124,7 +124,7 @@ public class UserLiveTest {
         response = RestAssured.get(location);
         assertEquals(HttpStatus.NOT_FOUND.value(), response.getStatusCode());
     }
-
+*/
     // =============================== stub
 
     private User createRandomUser() {

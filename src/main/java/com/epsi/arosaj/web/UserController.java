@@ -27,50 +27,37 @@ public class UserController {
     @GetMapping(path = "/")
     public Iterable<User> findAll() {
         logger.info("findAll");
-        return userRepository.findAll();
+        return userService.findAll();
     }
 
     @GetMapping("/pseudo/{pseudo}")
     public List findByPseudo(@PathVariable String pseudo) {
         logger.info("findByPseudo : " + pseudo);
-        return userRepository.findByPseudo(pseudo);
+        return userService.findByPseudo(pseudo);
     }
 
     @GetMapping("/{id}")
     public User findOne(@PathVariable Long id) {
         logger.info("findOne : " + id);
-        return userRepository.findById(id)
-                .orElseThrow(UserNotFoundException::new);
+        return userService.findOne(id);
     }
 
     @PostMapping(path = "/add")
     @ResponseStatus(HttpStatus.CREATED)
     public User create(@RequestBody User user) {
         logger.info("create : " + user.toString());
-
-        if (userRepository.existsById(user.getId())) {
-            throw new UserAlreadyExistsException("Un utilisateur avec l'ID " + user.getId() + " existe déjà");
-        }
-
-        return userRepository.save(user);
+        return userService.create(user);
     }
 
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) {
         logger.info("delete : " + id);
-        userRepository.findById(id)
-                .orElseThrow(UserNotFoundException::new);
-        userRepository.deleteById(id);
+        userService.delete(id);
     }
 
     @PutMapping("/{id}")
     public User updateUser(@RequestBody User user, @PathVariable Long id) {
-        if (user.getId() != id) {
-            throw new UserIdMismatchException();
-        }
         logger.info("updateUser : " + id);
-        userRepository.findById(id)
-                .orElseThrow(UserNotFoundException::new);
-        return userRepository.save(user);
+        return userService.updateUser(user,id);
     }
 }
