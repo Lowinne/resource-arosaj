@@ -29,6 +29,8 @@ jobs:
         cache: maven
     - name: Build with Maven
       run: mvn clean install
+    - name: Check working directory
+      run: pwd
   docker:
     runs-on: ubuntu-latest
     steps:
