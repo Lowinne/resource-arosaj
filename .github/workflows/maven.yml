@@ -48,11 +48,8 @@ jobs:
         name: Build and push
         uses: docker/build-push-action@v5
         with:
-          context: .
-          platforms: linux/amd64,linux/arm64
           push: true
           tags: arosaj-server-image:latest
-          file: /home/runner/work/resource-arosaj/resource-arosaj/Dockerfile
       -
         name: Inspect
         run: |
