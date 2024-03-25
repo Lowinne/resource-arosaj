@@ -36,4 +36,3 @@ jobs:
         with:
           push: true
           tags: arosaj-server-image:latest
-          file: ./docker/Dockerfile
