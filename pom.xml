@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.epsi</groupId>
-	<artifactId>arosaj</artifactId>
-	<version>0.0.2</version>
-	<name>arosaj</name>
-	<description>Web server for arosaj app</description>
+	<artifactId>ArosajAPI</artifactId>
+	<version>0.0.3</version>
+	<name>ArosajAPI</name>
+	<description>API for arosaj app</description>
 	<properties>
 		<java.version>21</java.version>
 	</properties>
