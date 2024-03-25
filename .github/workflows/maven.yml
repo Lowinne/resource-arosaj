@@ -52,7 +52,7 @@ jobs:
           platforms: linux/amd64,linux/arm64
           push: true
           tags: arosaj-server-image:latest
-          file: Dockerfile
+          file: ./Dockerfile
       -
         name: Inspect
         run: |
