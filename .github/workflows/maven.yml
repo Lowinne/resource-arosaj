@@ -11,7 +11,7 @@ name: CICD Workflow ArosajAPI
 on:
   push:
     branches:
-      - 'main'
+      - 'master'
 
 jobs:
   docker:
