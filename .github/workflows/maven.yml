@@ -30,6 +30,8 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
+      - name: XDTesting Print Directory Structure
+        uses: FiorelaCiroku/XDTesting-Print-Directory-Structure@v1.0.2
       -
         name: Build and push
         uses: docker/build-push-action@v5
