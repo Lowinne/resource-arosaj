@@ -98,7 +98,7 @@
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
 		</plugins>
-		<finalName>arosaj-server-image</finalName>
+		<finalName>arosaj-server</finalName>
 	</build>
 
 </project>
