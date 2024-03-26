@@ -47,7 +47,7 @@ jobs:
           push: true
           tags: lowinne/arosaj-server-image:latest
   deploy:
-    needs: build
+    needs: docker
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
