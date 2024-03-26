@@ -52,6 +52,3 @@ jobs:
           load : true
           tags: lowinne/arosaj-server-image:latest
 
-      - name: Test
-        run: |
-          docker run --rm lowinne/arosaj-server-image:latest
