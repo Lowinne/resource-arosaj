@@ -70,4 +70,4 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i ${{ secrets.AWS_PRIVATE_KEY_NAME }}.pem ubuntu@ec2-13-39-86-184.eu-west-3.compute.amazonaws.com 'sudo docker rm aroserver || true'
       - name: Run new container
         run: |
-          ssh -o StrictHostKeyChecking=no -i ${{ env.AWS_PRIVATE_KEY_NAME }}.pem ubuntu@ec2-13-39-86-184.eu-west-3.compute.amazonaws.com 'sudo docker run -d --name aroserver -p 80:3000 lowinne/arosaj-server-image:latest'
+          ssh -o StrictHostKeyChecking=no -i ${{ secrets.AWS_PRIVATE_KEY_NAME }}.pem ubuntu@ec2-13-39-86-184.eu-west-3.compute.amazonaws.com 'sudo docker run -d --name aroserver -p 80:3000 lowinne/arosaj-server-image:latest'
