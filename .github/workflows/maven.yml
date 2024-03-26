@@ -18,6 +18,15 @@ jobs:
   docker:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+          cache: maven
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
       -
         name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -30,19 +39,6 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
-
-      - name: XDTesting Print Directory Structure
-        uses: FiorelaCiroku/XDTesting-Print-Directory-Structure@v1.0.2
-
-      - uses: actions/checkout@v3
-      - name: Set up JDK 17
-        uses: actions/setup-java@v3
-        with:
-          java-version: '21'
-          distribution: 'temurin'
-          cache: maven
-      - name: Build with Maven
-        run: mvn -B package --file pom.xml
       -
         name: Build and push
         uses: docker/build-push-action@v5
@@ -50,5 +46,5 @@ jobs:
           context: .
           dockerfile: Dockerfile
           load : true
-          tags: lowinne/aroserver:latest
+          tags: lowinne/arosaj-server-image:latest
 
