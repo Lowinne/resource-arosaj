@@ -50,5 +50,5 @@ jobs:
           context: .
           dockerfile: Dockerfile
           load : true
-          tags: lowinne/arosaj-server-image:latest
+          tags: lowinne/arosaj-server-image:0.0.3
 
