@@ -7,16 +7,17 @@ import com.epsi.arosaj.persistence.model.Utilisateur;
 import com.epsi.arosaj.persistence.model.Ville;
 
 public class UserMapper {
-    public static UserPublicDto convertEntityToDto(Utilisateur user) {
+    public static UserPublicDto convertEntityToUserPublicDto(Utilisateur user) {
         UserPublicDto userPublicDto = new UserPublicDto();
         userPublicDto.setId(user.getId());
         userPublicDto.setFirstName(user.getPrenom());
         userPublicDto.setLastName(user.getNom());
         userPublicDto.setEmail(user.getEmail());
+        userPublicDto.setRole(user.getRole().getRole());
         return userPublicDto;
     }
 
-    public static Utilisateur convertDtoToEntity(UserDto userDto){
+    public static Utilisateur convertUserDtoToEntity(UserDto userDto){
         Role role = new Role();
         role.setCode(userDto.getCodeRole());
         //Nom role to set in userservice

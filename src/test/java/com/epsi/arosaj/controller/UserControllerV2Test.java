@@ -39,7 +39,8 @@ public class UserControllerV2Test {
     @Order(1)
     public void testAddUser() throws Exception {
         mockMvc.perform( MockMvcRequestBuilders
-                        .post(ROOT_PATH + "/add").content(asJsonString(testUtil.createRandomUserDto()))
+                        .post(ROOT_PATH + "/add")
+                        .content(asJsonString(testUtil.createRandomUserDto()))
                         .contentType(APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
@@ -47,8 +48,8 @@ public class UserControllerV2Test {
                 );
     }
 
-    @Test
-    @Order(2)
+    //@Test
+    //@Order(2)
     public void testGetUsersById() throws Exception {
         mockMvc.perform(MockMvcRequestBuilders
                         .get(ROOT_PATH + "/{id}", 1)
@@ -70,56 +71,74 @@ public class UserControllerV2Test {
     @Test
     @Order(4)
     public void testGetUsersByPseudo() throws Exception {
-        mockMvc.perform(get(ROOT_PATH + "/pseudo/{pseudo}", "test"))
+
+        mockMvc.perform(get(ROOT_PATH + "/pseudo")
+                .content(asJsonString(testUtil.createRandomUserDto()))
+                .contentType(APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isOk());
     }
 
     @Test
     @Order(5)
     public void testUpdateUser() throws Exception {
-        Utilisateur user = testUtil.createRandomUser();
-        user.setId(1);
+        UserDto user = testUtil.createRandomUserDto();
+        user.setEmail("boris@provider.com");
 
         mockMvc.perform( MockMvcRequestBuilders
-                        .put(ROOT_PATH + "/{id}",1).content(asJsonString(user))
+                        .put(ROOT_PATH + "/" ).content(asJsonString(user))
                         .contentType(APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
-                .andExpect((MockMvcResultMatchers.jsonPath("$.id").value(1)));
+                .andExpect((MockMvcResultMatchers.jsonPath("$.email").value("boris@provider.com")));
     }
 
     @Test
     @Order(6)
-    public void testDeleteUsersById() throws Exception {
-        mockMvc.perform(delete(ROOT_PATH + "/{id}", 1))
+    public void testDeleteUsers() throws Exception {
+        mockMvc.perform( MockMvcRequestBuilders
+                        .delete(ROOT_PATH + "/" ).content(asJsonString(testUtil.createRandomUserDto()))
+                        .contentType(APPLICATION_JSON_VALUE)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isOk());
     }
 
-    @Test
-    @Order(7)
+    //@Test
+    //@Order(7)
     public void testGetUsersById_NotFound() throws Exception {
-        mockMvc.perform(get(ROOT_PATH + "/{id}", 1))
+        mockMvc.perform(get(ROOT_PATH + "/{id}", 9999))
                 .andExpect(status().isNotFound());
     }
 
     @Test
     @Order(8)
-    public void testDeleteUsersById_NotFound() throws Exception {
-        mockMvc.perform(delete(ROOT_PATH + "/{id}", 1))
+    public void testDeleteUsers_NotFound() throws Exception {
+        UserDto userDto = testUtil.createRandomUserDto();
+        userDto.setPseudo("xxxxx");
+
+        mockMvc.perform( MockMvcRequestBuilders
+                        .delete(ROOT_PATH + "/" ).content(asJsonString(userDto))
+                        .contentType(APPLICATION_JSON_VALUE)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isNotFound());
     }
 
     @Test
     @Order(9)
     public void testUpdateUser_BadRequest() throws Exception {
-        Utilisateur user = testUtil.createRandomUser();
+        UserDto user = testUtil.createRandomUserDto();
+        user.setPseudo("wtv else");
 
         mockMvc.perform( MockMvcRequestBuilders
-                        .put(ROOT_PATH + "/" + user.getId()+1).content(asJsonString(user))
+                        .put(ROOT_PATH + "/" ).content(asJsonString(user))
                         .contentType(APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON))
-                .andExpect(status().isBadRequest()
+                .andDo(print())
+                .andExpect(status().isNotFound()
                 );
     }
 
@@ -133,6 +152,7 @@ public class UserControllerV2Test {
                         .post(ROOT_PATH + "/add").content(asJsonString(userDto))
                         .contentType(APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.pseudo").exists()
                 );
@@ -141,10 +161,14 @@ public class UserControllerV2Test {
     @Test
     @Order(11)
     public void testAddUser3_SamePseudo_BadRequest() throws Exception {
+        UserDto userDto = testUtil.createRandomUserDto();
+        userDto.setPseudo("test1");
+
         mockMvc.perform( MockMvcRequestBuilders
-                        .post(ROOT_PATH + "/add").content(asJsonString(testUtil.createRandomUserDto()))
+                        .post(ROOT_PATH + "/add").content(asJsonString(userDto))
                         .contentType(APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isBadRequest()
                 );
     }
@@ -159,6 +183,7 @@ public class UserControllerV2Test {
                         .post(ROOT_PATH + "/add").content(asJsonString(userDto))
                         .contentType(APPLICATION_JSON_VALUE)
                         .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
                 .andExpect(status().isCreated())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.pseudo").exists()
                 );

@@ -2,6 +2,7 @@ package com.epsi.arosaj.web;
 
 import com.epsi.arosaj.persistence.dto.UserDto;
 import com.epsi.arosaj.persistence.dto.UserPublicDto;
+import com.epsi.arosaj.persistence.dto.mapper.UserMapper;
 import com.epsi.arosaj.persistence.model.Role;
 import com.epsi.arosaj.persistence.model.Utilisateur;
 import com.epsi.arosaj.service.UserService;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.naming.AuthenticationException;
 import java.util.List;
 
 @RestController
@@ -27,31 +29,20 @@ public class UserControllerV2 {
     @Autowired
     private UserService userService;
 
+
     @Operation(summary = "Get all users")
     @GetMapping(path = "/")
-    public Iterable<UserPublicDto> findAll() {
+    public Iterable<UserPublicDto> findAllPublicUser() {
         logger.info("findAll");
         return userService.getAllUsers();
     }
 
     @Operation(summary = "Find a user by its pseudo")
-    @GetMapping("/pseudo/{pseudo}")
-    public List findByPseudo(@Parameter(description = "pseudo of user to be searched") @PathVariable String pseudo) {
+    @GetMapping("/pseudo")
+    public Utilisateur findByPseudo(@Parameter(description = "pseudo of user to be searched") @RequestBody UserDto userDto) {
+        String pseudo = userDto.getPseudo();
         logger.info("findByPseudo : " + pseudo);
-        return userService.findByPseudo(pseudo);
-    }
-
-    @Operation(summary = "Find a user by its id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User found ",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Utilisateur.class)) }),
-            @ApiResponse(responseCode = "404", description = "User not found",
-                    content = @Content) })
-    @GetMapping("/{id}")
-    public Utilisateur findOne(@Parameter(description = "id of user to be searched") @PathVariable Long id) {
-        logger.info("findOne : " + id);
-        return userService.findOne(id);
+        return userService.findUserByPseudo(pseudo, userDto.getPwd());
     }
 
     @Operation(summary = "Create a user ")
@@ -68,20 +59,7 @@ public class UserControllerV2 {
         return userService.saveUser(userDto);
     }
 
-    @Operation(summary = "Delete a user by its id")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "User found and updated",
-                    content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Utilisateur.class)) }),
-            @ApiResponse(responseCode = "404", description = "User not found",
-                    content = @Content) })
-    @DeleteMapping("/{id}")
-    public void delete(@Parameter(description = "id of user to be deleted") @PathVariable Long id) {
-        logger.info("delete : " + id);
-        userService.delete(id);
-    }
-
-    @Operation(summary = "Update a user by its id")
+    @Operation(summary = "Update a user ")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User found and updated",
                     content = { @Content(mediaType = "application/json",
@@ -90,14 +68,40 @@ public class UserControllerV2 {
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "User not found",
                     content = @Content) })
-    @PutMapping("/{id}")
-    public Utilisateur updateUser(@Parameter(description = "new information for updating")@RequestBody Utilisateur user, @Parameter(description = "id of user to be updated") @PathVariable Long id) {
-        logger.info("updateUser : " + id);
-        return userService.updateUser(user,id);
+    @PutMapping("/")
+    public Utilisateur updateUser(@Parameter(description = "new information for updating")@RequestBody UserDto userDto) throws AuthenticationException {
+        logger.info("updateUser : " + userDto.toString());
+        return userService.updateUser(userDto);
     }
 
+    @Operation(summary = "Get all the roles ")
     @GetMapping(path = "/role/all")
     public @ResponseBody Iterable<Role> getAllRole(){
         return userService.getAllRole();
     }
+
+    @Operation(summary = "Delete a user ")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User found and deleted"),
+            @ApiResponse(responseCode = "404", description = "User not found") })
+    @DeleteMapping("/")
+    public void delete(@Parameter(description = "user to be deleted") @RequestBody UserDto userDto) throws AuthenticationException {
+        logger.info("delete : " + userDto.toString());
+        userService.delete(userDto);
+    }
+
+    @Deprecated(forRemoval = true)
+    @Operation(summary = "Find a user by its id")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "User found ",
+                    content = { @Content(mediaType = "application/json",
+                            schema = @Schema(implementation = Utilisateur.class)) }),
+            @ApiResponse(responseCode = "404", description = "User not found",
+                    content = @Content) })
+    @GetMapping("/{id}")
+    public Utilisateur findOne(@Parameter(description = "id of user to be searched") @PathVariable Long id) {
+        logger.info("findOne : " + id);
+        return userService.findOne(id);
+    }
+
 }

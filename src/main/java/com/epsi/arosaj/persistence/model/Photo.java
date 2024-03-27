@@ -15,7 +15,7 @@ public class Photo {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonIgnore // User already known
     private Utilisateur utilisateur;
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "photoPlante_id", nullable = false)
     @JsonIgnore // Prevent infinite recursion
     private PhotoPlante photoPlante;

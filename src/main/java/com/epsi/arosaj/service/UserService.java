@@ -6,7 +6,9 @@ import com.epsi.arosaj.persistence.dto.mapper.UserMapper;
 import com.epsi.arosaj.persistence.model.Role;
 import com.epsi.arosaj.persistence.model.Utilisateur;
 import com.epsi.arosaj.persistence.repository.UserRepository;
+import com.epsi.arosaj.persistence.util.NullChecker;
 import com.epsi.arosaj.web.exception.FindAnotherPseudoException;
+import com.epsi.arosaj.web.exception.ParameterMistakeException;
 import com.epsi.arosaj.web.exception.UserIdMismatchException;
 import com.epsi.arosaj.web.exception.UserNotFoundException;
 import org.slf4j.Logger;
@@ -16,11 +18,12 @@ import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
+import javax.naming.AuthenticationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.epsi.arosaj.persistence.dto.mapper.UserMapper.convertDtoToEntity;
+import static com.epsi.arosaj.persistence.dto.mapper.UserMapper.convertUserDtoToEntity;
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 
 @Service
@@ -38,7 +41,7 @@ public class UserService {
 
     public Utilisateur saveUser(UserDto userDto){
         logger.info("saveUser");
-        Utilisateur user = convertDtoToEntity(userDto);
+        Utilisateur user = convertUserDtoToEntity(userDto);
         user.setRole(roleService.getRoleInTable(user.getRole().getCode()));
         user.setVille(villeService.ifNotExistSave(user.getVille().getNom(), user.getVille().getCodePostale()));
         logger.info(user.toString());
@@ -47,7 +50,38 @@ public class UserService {
             throw new FindAnotherPseudoException("Entrer un autre pseudo");
         }
 
+        if(!NullChecker.allNotNull(user)){
+            throw new ParameterMistakeException("One or more field needed null");
+        }
+
         return userRepository.save(user);
+    }
+
+    public Utilisateur updateUser(UserDto userDto) throws AuthenticationException {
+        Utilisateur userTemp = convertUserDtoToEntity(userDto);
+        //Determiner si le user existe bien et est authentifié
+        Utilisateur user = findUserByPseudo(userTemp.getPseudo(),userTemp.getPwd());
+        if(user == null){
+            throw new UserNotFoundException("Le pseudo et le mot de passe ne correspondent pas");
+        }
+        userTemp.setId(user.getId());
+        userTemp.setRole(roleService.getRoleInTable(userTemp.getRole().getCode()));
+        userTemp.setVille(villeService.ifNotExistSave(userTemp.getVille().getNom(), userTemp.getVille().getCodePostale()));
+        logger.info(userTemp.toString());
+
+        return userRepository.save(userTemp);
+    }
+
+    public void delete(UserDto userDto) throws AuthenticationException {
+        Utilisateur userTemp = convertUserDtoToEntity(userDto);
+        //Determiner si le user existe bien et est authentifié
+        Utilisateur user = findUserByPseudo(userTemp.getPseudo(),userTemp.getPwd());
+        if(user == null){
+            throw new UserNotFoundException("Le pseudo et le mot de passe ne correspondent pas");
+        }
+        userTemp.setId(user.getId());
+
+        userRepository.deleteById(userTemp.getId());
     }
 
     public Utilisateur create(Utilisateur user) {
@@ -79,27 +113,24 @@ public class UserService {
         return userRepository.findByPseudo(pseudo);
     }
 
+    public Utilisateur findUserByPseudo(String pseudo, String pwd) {
+        if(pwd == null){
+            throw new ParameterMistakeException("Entrer un mot de passe");
+        } else if (pseudo == null) {
+            throw new ParameterMistakeException("Entrer un pseudo");
+        }
+        logger.info("findByPseudo : " + pseudo);
+        Utilisateur temp = userRepository.findUserByPseudo(pseudo, pwd);
+        if(temp == null){
+            throw new UserNotFoundException();
+        }
+        return temp;
+    }
+
     public Utilisateur findOne(Long id) {
         logger.info("findOne : " + id);
         return userRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
-    }
-
-    public void delete(Long id) {
-        logger.info("delete : " + id);
-        userRepository.findById(id)
-                .orElseThrow(UserNotFoundException::new);
-        userRepository.deleteById(id);
-    }
-
-    public Utilisateur updateUser(Utilisateur user, Long id) {
-        if (user.getId() != id) {
-            throw new UserIdMismatchException();
-        }
-        logger.info("updateUser : " + id);
-        userRepository.findById(id)
-                .orElseThrow(UserNotFoundException::new);
-        return userRepository.save(user);
     }
 
     public List<UserPublicDto> getAllUsers() {
@@ -107,7 +138,7 @@ public class UserService {
         List<UserPublicDto> userPublicDtoList = new ArrayList<>();
         for(Utilisateur user:userList) {
             // Custom Mapper
-            UserPublicDto userPublicDto = UserMapper.convertEntityToDto(user);
+            UserPublicDto userPublicDto = UserMapper.convertEntityToUserPublicDto(user);
             userPublicDtoList.add(userPublicDto);
         }
         return userPublicDtoList;
@@ -116,7 +147,7 @@ public class UserService {
     public UserPublicDto getUserById(Long userId) {
         Optional<Utilisateur> optionalUser = userRepository.findById(userId);
         // Custom Mapper
-        return UserMapper.convertEntityToDto(optionalUser.get());
+        return UserMapper.convertEntityToUserPublicDto(optionalUser.get());
     }
 
     //Works for the first version

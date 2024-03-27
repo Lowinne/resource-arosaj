@@ -18,10 +18,10 @@ public class Utilisateur {
     private String pwd;
     @Column(nullable = false)
     private String rue;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "ville_id", referencedColumnName = "id", unique = false, nullable = false)
     private Ville ville;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "role_id", referencedColumnName = "id", unique = false, nullable = false)
     private Role role;
 
