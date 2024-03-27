@@ -132,6 +132,10 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public Iterable<Role> getAllRole(){
+        return roleService.getAllRole();
+    }
+
     //Initialise les roles et les user correspondant au demarage
     @EventListener(ApplicationReadyEvent.class)
     public void initRoleV1(){
@@ -181,6 +185,8 @@ public class UserService {
         saveUserV1(user3);
 
     }
+
+
 
 
 }

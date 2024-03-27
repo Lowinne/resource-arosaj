@@ -35,4 +35,8 @@ public class RoleService {
         logger.info("Searching a role by code : " + code);
         return roleRepository.findByCode(code);
     }
+
+    public Iterable<Role> getAllRole() {
+        return roleRepository.findAll();
+    }
 }

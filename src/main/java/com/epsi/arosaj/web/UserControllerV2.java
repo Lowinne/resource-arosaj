@@ -2,6 +2,7 @@ package com.epsi.arosaj.web;
 
 import com.epsi.arosaj.persistence.dto.UserDto;
 import com.epsi.arosaj.persistence.dto.UserPublicDto;
+import com.epsi.arosaj.persistence.model.Role;
 import com.epsi.arosaj.persistence.model.Utilisateur;
 import com.epsi.arosaj.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -93,5 +94,10 @@ public class UserControllerV2 {
     public Utilisateur updateUser(@Parameter(description = "new information for updating")@RequestBody Utilisateur user, @Parameter(description = "id of user to be updated") @PathVariable Long id) {
         logger.info("updateUser : " + id);
         return userService.updateUser(user,id);
+    }
+
+    @GetMapping(path = "/role/all")
+    public @ResponseBody Iterable<Role> getAllRole(){
+        return userService.getAllRole();
     }
 }
