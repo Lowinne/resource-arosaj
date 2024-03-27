@@ -1,16 +1,11 @@
 package com.epsi.arosaj;
 
 import com.epsi.arosaj.persistence.model.Role;
-import com.epsi.arosaj.persistence.model.User;
+import com.epsi.arosaj.persistence.model.Utilisateur;
 import com.epsi.arosaj.persistence.model.Ville;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
-import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-
-import java.util.List;
 
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.apache.commons.lang3.RandomStringUtils.randomNumeric;
@@ -127,7 +122,7 @@ public class UserLiveTest {
 */
     // =============================== stub
 
-    private User createRandomUser() {
+    private Utilisateur createRandomUser() {
 
         Role role = new Role();
         role.setCode("P");
@@ -137,7 +132,7 @@ public class UserLiveTest {
         ville.setNom("Massy");
         ville.setCodePostale("91300");
 
-        User user = new User();
+        Utilisateur user = new Utilisateur();
         user.setNom(randomAlphabetic(10));
         user.setPrenom(randomAlphabetic(10));
         user.setPseudo(randomAlphabetic(10));
@@ -150,7 +145,7 @@ public class UserLiveTest {
         return user;
     }
 
-    private String createUserAsUri(User user) {
+    private String createUserAsUri(Utilisateur user) {
         Response response = RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(user)

@@ -12,6 +12,11 @@ public class Role {
     @Column(nullable = false)
     private String role;
 
+    public Role(String code, String role) {
+        this.code = code;
+        this.role = role;
+    }
+
     public Role() {
     }
 

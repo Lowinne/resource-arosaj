@@ -2,8 +2,7 @@ package com.epsi.arosaj.persistence.model;
 
 import jakarta.persistence.*;
 @Entity
-@Table(name = "UTILISATEUR")
-public class User {
+public class Utilisateur {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
@@ -26,7 +25,7 @@ public class User {
     @JoinColumn(name = "role_id", referencedColumnName = "id", unique = false, nullable = false)
     private Role role;
 
-    public User() {
+    public Utilisateur() {
     }
 
     @Override

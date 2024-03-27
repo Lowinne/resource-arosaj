@@ -1,9 +1,6 @@
 package com.epsi.arosaj.web;
 
-import com.epsi.arosaj.web.exception.FindAnotherPseudoException;
-import com.epsi.arosaj.web.exception.UserAlreadyExistsException;
-import com.epsi.arosaj.web.exception.UserIdMismatchException;
-import com.epsi.arosaj.web.exception.UserNotFoundException;
+import com.epsi.arosaj.web.exception.*;
 import org.hibernate.exception.ConstraintViolationException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
@@ -30,7 +27,8 @@ public class RestExceptionHandler extends ResponseEntityExceptionHandler {
             UserAlreadyExistsException.class,
             ConstraintViolationException.class,
             DataIntegrityViolationException.class,
-            FindAnotherPseudoException.class})
+            FindAnotherPseudoException.class,
+            ParameterMistakeException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ResponseEntity<Object> handleBadRequest(
             Exception ex, WebRequest request) {
