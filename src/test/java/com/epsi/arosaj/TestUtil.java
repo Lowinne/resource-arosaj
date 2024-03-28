@@ -1,7 +1,8 @@
 package com.epsi.arosaj;
 
+import com.epsi.arosaj.persistence.dto.UserDto;
 import com.epsi.arosaj.persistence.model.Role;
-import com.epsi.arosaj.persistence.model.User;
+import com.epsi.arosaj.persistence.model.Utilisateur;
 import com.epsi.arosaj.persistence.model.Ville;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
@@ -18,8 +19,7 @@ public class TestUtil {
         return API_ROOT;
     }
 
-    public User createRandomUser() {
-
+    public Utilisateur createRandomUser() {
         Role role = new Role();
         role.setCode("P");
         role.setRole("Proprietaire");
@@ -28,20 +28,37 @@ public class TestUtil {
         ville.setNom("Massy");
         ville.setCodePostale("91300");
 
-        User user = new User();
+        Utilisateur user = new Utilisateur();
         user.setNom(randomAlphabetic(10));
         user.setPrenom(randomAlphabetic(10));
-        user.setPseudo(randomAlphabetic(10));
+        user.setPseudo("Test");
         user.setEmail(randomAlphabetic(10));
-        user.setPwd(randomAlphabetic(15));
+        user.setPwd("Test");
         user.setRue(randomAlphabetic(10));
         user.setRole(role);
         user.setVille(ville);
 
+
         return user;
     }
 
-    public String createUserAsUri(User user) {
+    public UserDto createRandomUserDto(){
+        UserDto userDto = new UserDto();
+        userDto.setCodeRole("P");
+        userDto.setNomVille("Massy");
+        userDto.setCodePostale("91300");
+        userDto.setFirstName("P");
+        userDto.setLastName("P");
+        userDto.setPseudo("P");
+        userDto.setEmail("P");
+        userDto.setPwd("P");
+        userDto.setRue("P");
+
+
+        return userDto;
+    }
+
+    public String createUserAsUri(Utilisateur user) {
         Response response = RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(user)
