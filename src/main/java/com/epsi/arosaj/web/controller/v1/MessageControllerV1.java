@@ -1,4 +1,4 @@
-package com.epsi.arosaj.web;
+package com.epsi.arosaj.web.controller.v1;
 
 import com.epsi.arosaj.persistence.model.Message;
 import com.epsi.arosaj.persistence.model.Role;

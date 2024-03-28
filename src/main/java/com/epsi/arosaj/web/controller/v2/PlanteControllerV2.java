@@ -1,10 +1,7 @@
-package com.epsi.arosaj.web;
+package com.epsi.arosaj.web.controller.v2;
 
 import com.epsi.arosaj.persistence.dto.ConseilDto;
 import com.epsi.arosaj.persistence.model.*;
-import com.epsi.arosaj.persistence.repository.BotanistePlanteRepository;
-import com.epsi.arosaj.persistence.repository.PlanteRepository;
-import com.epsi.arosaj.persistence.repository.UtilisateurPlanteRepository;
 import com.epsi.arosaj.service.PhotoService;
 import com.epsi.arosaj.service.PlanteService;
 import com.epsi.arosaj.service.UserService;
@@ -20,9 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/api/plante/v2")
@@ -109,7 +104,7 @@ public class PlanteControllerV2 {
         throw new RuntimeException("Something hapenned :( when finding photos of plant");
     }
 
-    @PostMapping(path = "/botaniste/conseil")
+    @PostMapping(path = "/botaniste/conseil/add")
     @Operation(summary = "Ajoute un conseil à une plante avec verification pseudo/pwd ")
     public @ResponseBody ConseilDto addConseil(@RequestHeader String botanistePseudo, @RequestHeader String pwd, @RequestHeader Long planteId, @RequestHeader String conseil) throws JsonProcessingException {
         Utilisateur user = userService.findUserByPseudo(botanistePseudo,pwd);

@@ -327,7 +327,7 @@ public class ControllerV2Test {
     public void testaddConseilOfPlante() throws Exception {
         //Botaniste
         mockMvc.perform( MockMvcRequestBuilders
-                        .post(ROOT_PATH_PLANTE + "/botaniste/conseil")
+                        .post(ROOT_PATH_PLANTE + "/botaniste/conseil/add")
                         .header("botanistePseudo","test2")
                         .header("pwd", "1234")
                         .header("planteId", "1")
@@ -344,7 +344,7 @@ public class ControllerV2Test {
     public void testaddConseilOfPlante2() throws Exception {
         //Botaniste
         mockMvc.perform( MockMvcRequestBuilders
-                        .post(ROOT_PATH_PLANTE + "/botaniste/conseil")
+                        .post(ROOT_PATH_PLANTE + "/botaniste/conseil/add")
                         .header("botanistePseudo","test2")
                         .header("pwd", "1234")
                         .header("planteId", "1")
@@ -371,6 +371,21 @@ public class ControllerV2Test {
                 .andExpect(status().isOk()
                 );
     }
+
+    /*@Test
+    @Order(22)
+    public void testDeleteUser2() throws Exception {
+        UserDto userDto = testUtil.createRandomUserDto();
+        userDto.setPseudo("test1");
+        userDto.setPwd("1234");
+
+        mockMvc.perform( MockMvcRequestBuilders
+                        .delete(ROOT_PATH_USER + "/" ).content(asJsonString(userDto))
+                        .contentType(APPLICATION_JSON_VALUE)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }*/
 
     public static String asJsonString(final Object obj) {
         try {

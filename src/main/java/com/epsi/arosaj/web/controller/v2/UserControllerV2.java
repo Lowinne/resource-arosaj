@@ -1,8 +1,7 @@
-package com.epsi.arosaj.web;
+package com.epsi.arosaj.web.controller.v2;
 
 import com.epsi.arosaj.persistence.dto.UserDto;
 import com.epsi.arosaj.persistence.dto.UserPublicDto;
-import com.epsi.arosaj.persistence.dto.mapper.UserMapper;
 import com.epsi.arosaj.persistence.model.Role;
 import com.epsi.arosaj.persistence.model.Utilisateur;
 import com.epsi.arosaj.service.UserService;
@@ -19,7 +18,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.naming.AuthenticationException;
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/user/v2")
@@ -74,13 +72,15 @@ public class UserControllerV2 {
         return userService.updateUser(userDto);
     }
 
+
     @Operation(summary = "Get all the roles ")
     @GetMapping(path = "/role/all")
     public @ResponseBody Iterable<Role> getAllRole(){
         return userService.getAllRole();
     }
 
-    @Operation(summary = "Delete a user ")
+    @Deprecated(forRemoval = true)
+    @Operation(summary = "Delete a user (ne pas utiliser)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User found and deleted"),
             @ApiResponse(responseCode = "404", description = "User not found") })
@@ -91,7 +91,7 @@ public class UserControllerV2 {
     }
 
     @Deprecated(forRemoval = true)
-    @Operation(summary = "Find a user by its id")
+    @Operation(summary = "Find a user by its id (ne pas utiliser !!!)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User found ",
                     content = { @Content(mediaType = "application/json",
@@ -103,5 +103,6 @@ public class UserControllerV2 {
         logger.info("findOne : " + id);
         return userService.findOne(id);
     }
+
 
 }

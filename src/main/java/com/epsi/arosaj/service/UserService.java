@@ -122,7 +122,7 @@ public class UserService {
         logger.info("findByPseudo : " + pseudo);
         Utilisateur temp = userRepository.findUserByPseudo(pseudo, pwd);
         if(temp == null){
-            throw new UserNotFoundException();
+            throw new UserNotFoundException("Utilisateur non trouvé / Le mot de passe et le pseudo ne correspondent pas");
         }
         return temp;
     }
