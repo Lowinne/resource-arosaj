@@ -1,31 +1,46 @@
 package com.epsi.arosaj.service;
 
+import com.epsi.arosaj.persistence.dto.ConseilDto;
 import com.epsi.arosaj.persistence.model.*;
+import com.epsi.arosaj.persistence.repository.BotanistePlanteRepository;
 import com.epsi.arosaj.persistence.repository.PhotoPlanteRepository;
 import com.epsi.arosaj.persistence.repository.PlanteRepository;
 import com.epsi.arosaj.persistence.repository.UtilisateurPlanteRepository;
+import com.epsi.arosaj.web.exception.UserNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PlanteService {
     @Autowired
     private PlanteRepository planteRepository;
+
     @Autowired
     private UtilisateurPlanteRepository utilisateurPlanteRepository;
+
     @Autowired
     private PhotoPlanteRepository photoPlanteRepository;
+
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private BotanistePlanteRepository botanistePlanteRepository;
+
 
     public boolean doesPlanteExist(Long id){
         return planteRepository.existsById(id);
     }
     public Plante getPlante(Long id){
-        return planteRepository.findById(id).get();
+        Plante plante = planteRepository.findById(id).get();
+        if(plante == null){
+            throw new UserNotFoundException("Plante Not Found");
+        }
+        return plante;
     }
 
     public List<Photo> getAllPhotoOfPlante(Long id){
@@ -50,5 +65,53 @@ public class PlanteService {
         return planteList;
         //utilisateurPlante.getPlanteList();
 
+    }
+
+    public Plante savePlante(Utilisateur user, String nom, String desc){
+        UtilisateurPlante utilisateurPlante = new UtilisateurPlante();
+        utilisateurPlante.setProprietaire(user);
+
+        Plante plante = new Plante();
+        plante.setNom(nom);
+        plante.setDescription(desc);
+        plante.setUtilisateurPlante(utilisateurPlante);
+
+        utilisateurPlante.getPlanteList().add(plante);
+
+        utilisateurPlante = utilisateurPlanteRepository.save(utilisateurPlante);
+        Optional<Plante> optionalPlante = utilisateurPlante.getPlanteList()
+                .stream()
+                .filter(p -> p.getNom().equals(nom) && p.getDescription().equals(desc))
+                .findFirst();
+
+        plante = planteRepository.save(optionalPlante.get());
+
+        return plante;
+    }
+
+    public ConseilDto saveConseil(Utilisateur user, Plante plante, String conseil){
+        BotanistePlante botanistePlante = new BotanistePlante();
+        botanistePlante.setBotaniste(user);
+        botanistePlante.setConseil(conseil);
+        botanistePlante.setPlante(plante);
+        botanistePlante = botanistePlanteRepository.save(botanistePlante);
+        if (botanistePlante == null){
+            throw new RuntimeException("Fail to save conseil");
+        }
+        ConseilDto conseilDto = new ConseilDto(botanistePlante.getBotaniste().getPseudo(), botanistePlante.getConseil());
+
+        return conseilDto;
+    }
+
+    public List<ConseilDto> getConseil(Long idPlante){
+        List<ConseilDto> conseils = new ArrayList<ConseilDto>();
+        List<BotanistePlante> botanistePlanteList = botanistePlanteRepository.findByPlante(idPlante);
+        for(BotanistePlante bp : botanistePlanteList){
+            conseils.add(new ConseilDto(bp.getBotaniste().getPseudo(),bp.getConseil()));
+        }
+        if (conseils.isEmpty()){
+            throw new UserNotFoundException("Pas de conseil trouvé");
+        }
+        return conseils;
     }
 }

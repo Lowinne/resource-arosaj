@@ -11,7 +11,7 @@ public class Plante {
     private String nom;
     private String description;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name="utilisateurPlante_id", nullable=false)
     @JsonIgnore
     private UtilisateurPlante utilisateurPlante;

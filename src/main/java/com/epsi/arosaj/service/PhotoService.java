@@ -19,7 +19,7 @@ public class PhotoService {
     private PlanteRepository planteRepository;
     @Autowired
     private PhotoPlanteRepository photoPlanteRepository;
-    public void uploadImage(byte[] imageData, Utilisateur user, Long planteId) {
+    public Photo uploadImage(byte[] imageData, Utilisateur user, Long planteId) {
         PhotoPlante photoPlante = new PhotoPlante();
         photoPlante.setPlante(planteRepository.findById(planteId).get());
 
@@ -36,6 +36,11 @@ public class PhotoService {
                 .filter(p -> p.getUtilisateur().getId() == user.getId() && p.getData() == imageData)
                 .findFirst();
 
-        photoRepository.save(optionalPhoto.get());
+        photo = photoRepository.save(optionalPhoto.get());
+        if(photo == null){
+            throw new RuntimeException("Saving image failed");
+        }
+
+        return photo;
     }
 }

@@ -20,7 +20,7 @@ import java.sql.Time;
 
 @Controller
 @RequestMapping("/api/sms/v1")
-public class MessageControllerV1 {
+public class MessageControllerV1  {
     @Autowired
     private MessageRepository messageRepository;
 

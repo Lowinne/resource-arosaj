@@ -11,7 +11,7 @@ public class Photo {
     @Lob
     @Column(columnDefinition = "LONGBLOB")
     private byte[] data;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonIgnore // User already known
     private Utilisateur utilisateur;

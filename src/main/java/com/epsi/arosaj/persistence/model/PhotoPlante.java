@@ -15,7 +15,7 @@ public class PhotoPlante {
     @JoinColumn(name = "plante_id", referencedColumnName = "id")
     private Plante plante;
 
-    @OneToMany(mappedBy="photoPlante")
+    @OneToMany(mappedBy="photoPlante", cascade = CascadeType.ALL)
     private List<Photo> photoList;
 
     public PhotoPlante() {

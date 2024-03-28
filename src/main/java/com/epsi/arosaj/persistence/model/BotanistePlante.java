@@ -2,6 +2,9 @@ package com.epsi.arosaj.persistence.model;
 
 import jakarta.persistence.*;
 
+import java.sql.Time;
+import java.util.Date;
+
 @Entity
 public class BotanistePlante {
     @Id
@@ -10,11 +13,14 @@ public class BotanistePlante {
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "plante_id", referencedColumnName = "id")
     private Plante plante;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "bota_id", referencedColumnName = "id")
     private Utilisateur botaniste;
 
     private String conseil;
+
+    private Date date;
+    private Time time;
 
     public String getConseil() {
         return conseil;
@@ -25,6 +31,8 @@ public class BotanistePlante {
     }
 
     public BotanistePlante() {
+        this.date = new Date();
+        this.time =new Time(date.getTime());
     }
 
     public long getId() {

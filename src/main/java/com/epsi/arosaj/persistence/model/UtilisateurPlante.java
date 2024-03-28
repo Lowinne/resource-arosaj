@@ -12,10 +12,10 @@ public class UtilisateurPlante {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "prop_id", referencedColumnName = "id")
     private Utilisateur proprietaire;
-    @OneToMany(mappedBy="utilisateurPlante")
+    @OneToMany(mappedBy="utilisateurPlante", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Plante> planteList;
 

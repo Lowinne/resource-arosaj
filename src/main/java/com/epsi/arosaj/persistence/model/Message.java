@@ -10,11 +10,11 @@ public class Message {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "expe_id", referencedColumnName = "id")
     private Utilisateur expediteur;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     @JoinColumn(name = "dest_id", referencedColumnName = "id")
     private Utilisateur destinataire;
     private String message;
