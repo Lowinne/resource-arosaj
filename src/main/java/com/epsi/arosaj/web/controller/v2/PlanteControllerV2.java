@@ -19,6 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
+//lux
+@CrossOrigin(origins = "*")
 @Controller
 @RequestMapping("/api/plante/v2")
 public class PlanteControllerV2 {
