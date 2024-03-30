@@ -1,6 +1,7 @@
 package com.epsi.arosaj.web.controller.v2;
 
 import com.epsi.arosaj.persistence.dto.ConseilDto;
+import com.epsi.arosaj.persistence.dto.ResponseFileDto;
 import com.epsi.arosaj.persistence.model.*;
 import com.epsi.arosaj.service.PhotoService;
 import com.epsi.arosaj.service.PlanteService;
@@ -15,9 +16,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 //lux
 @CrossOrigin(origins = "*")
@@ -55,11 +58,9 @@ public class PlanteControllerV2 {
                     Plante plante = planteService.savePlante(user,nom,desc);
 
                     if(plante != null){
-                        // Get the file data
-                        byte[] imageData = file.getBytes();
                         // Upload the image
                         try{
-                            photoService.uploadImage(imageData,user,plante.getId());
+                            photoService.uploadImage(file,user,plante.getId());
                         } catch (RuntimeException e){
                             logger.error("Fail saving first image of plant", e);
                         }
@@ -83,27 +84,41 @@ public class PlanteControllerV2 {
         }
         try {
             Utilisateur user = userService.findUserByPseudo(pseudo,userPwd);
-            byte[] imageData = file.getBytes();
 
             // Upload the image
-            return photoService.uploadImage(imageData,user,planteId);
+            return photoService.uploadImage(file,user,planteId);
 
         } catch (IOException e) {
-            throw new RuntimeException("Failed saving the photo of user");
+            throw new RuntimeException("Failed saving the photo of plante of user");
         }
     }
 
     @GetMapping("/images")
     @Operation(summary = "Find a list of photo for a plant id, with pseudo/pwd verification")
-    public @ResponseBody List<Photo> getPhotoOfPlant(@RequestHeader String pseudo, @RequestHeader String userPwd, @RequestHeader Long planteId) {
-        Utilisateur user = userService.findUserByPseudo(pseudo,userPwd);
-            try{
-                List<Photo> photoList = planteService.getAllPhotoOfPlante(planteId);
-                return photoList;
-            }catch(Exception e){
-                logger.error("Retreving image failed :",e);
-            }
-        throw new RuntimeException("Something hapenned :( when finding photos of plant");
+    public @ResponseBody List<ResponseFileDto> getPhotoOfPlant(@RequestHeader String pseudo, @RequestHeader String userPwd, @RequestHeader Long planteId) {
+        Utilisateur user = userService.findUserByPseudo(pseudo, userPwd);
+        try {
+            List<Photo> photoList = planteService.getAllPhotoOfPlante(planteId);
+            List<ResponseFileDto> files = photoList.stream()
+                    .map(photo -> {
+                        String fileDownloadUri = ServletUriComponentsBuilder
+                                .fromCurrentContextPath()
+                                .path("/files/")
+                                .path(String.valueOf(photo.getId()))
+                                .toUriString();
+                        return new ResponseFileDto(
+                                photo.getName(),
+                                fileDownloadUri,
+                                photo.getType(),
+                                photo.getData().length);
+                    })
+                    .collect(Collectors.toList());
+
+            return files; // Return the list of ResponseFileDto
+        } catch (Exception e) {
+            logger.error("Retrieving image failed: ", e);
+            throw new RuntimeException("Something happened :( when finding photos of plant");
+        }
     }
 
     @PostMapping(path = "/botaniste/conseil/add")
