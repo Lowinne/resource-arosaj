@@ -1,7 +1,10 @@
 package com.epsi.arosaj.web.controller.v2;
 
 import com.epsi.arosaj.persistence.dto.ConseilDto;
-import com.epsi.arosaj.persistence.dto.ResponseFileDto;
+import com.epsi.arosaj.persistence.dto.MessageDto;
+import com.epsi.arosaj.persistence.dto.mapper.MessageMapper;
+import com.epsi.arosaj.web.exception.UserNotFoundException;
+import com.epsi.arosaj.web.message.ResponseFile;
 import com.epsi.arosaj.persistence.model.*;
 import com.epsi.arosaj.service.PhotoService;
 import com.epsi.arosaj.service.PlanteService;
@@ -49,7 +52,7 @@ public class PlanteControllerV2 {
         }else {
             try{
                 Utilisateur user = userService.findUserByPseudo(pseudo,userPwd);
-                if(!user.getRole().getCode().equals("P")){
+                if(!user.getRole().getCode().equals(TypeEnum.PROPIETAIRE)){
                     logger.error("addPlante: Role invalid");
                     throw new UnauthorizedException("Invalid user role");
                 }else{
@@ -95,18 +98,18 @@ public class PlanteControllerV2 {
 
     @GetMapping("/images")
     @Operation(summary = "Find a list of photo for a plant id, with pseudo/pwd verification")
-    public @ResponseBody List<ResponseFileDto> getPhotoOfPlant(@RequestHeader String pseudo, @RequestHeader String userPwd, @RequestHeader Long planteId) {
+    public @ResponseBody List<ResponseFile> getPhotoOfPlant(@RequestHeader String pseudo, @RequestHeader String userPwd, @RequestHeader Long planteId) {
         Utilisateur user = userService.findUserByPseudo(pseudo, userPwd);
         try {
             List<Photo> photoList = planteService.getAllPhotoOfPlante(planteId);
-            List<ResponseFileDto> files = photoList.stream()
+            List<ResponseFile> files = photoList.stream()
                     .map(photo -> {
                         String fileDownloadUri = ServletUriComponentsBuilder
                                 .fromCurrentContextPath()
                                 .path("/files/")
                                 .path(String.valueOf(photo.getId()))
                                 .toUriString();
-                        return new ResponseFileDto(
+                        return new ResponseFile(
                                 photo.getName(),
                                 fileDownloadUri,
                                 photo.getType(),
@@ -125,7 +128,7 @@ public class PlanteControllerV2 {
     @Operation(summary = "Ajoute un conseil à une plante avec verification pseudo/pwd ")
     public @ResponseBody ConseilDto addConseil(@RequestHeader String botanistePseudo, @RequestHeader String pwd, @RequestHeader Long planteId, @RequestHeader String conseil) throws JsonProcessingException {
         Utilisateur user = userService.findUserByPseudo(botanistePseudo,pwd);
-        if(user.getRole().getCode().equals("B")){
+        if(user.getRole().getCode().equals(TypeEnum.BOTANISTE)){
             Plante plante = planteService.getPlante(planteId);
             return planteService.saveConseil(user, plante, conseil);
         }
@@ -137,6 +140,7 @@ public class PlanteControllerV2 {
     public @ResponseBody List<ConseilDto> getConseil(@RequestHeader Long planteId){
         return planteService.getConseil(planteId);
     }
+
 
 
 

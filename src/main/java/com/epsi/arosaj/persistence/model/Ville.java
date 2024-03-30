@@ -1,8 +1,10 @@
 package com.epsi.arosaj.persistence.model;
 
 import jakarta.persistence.*;
+import lombok.ToString;
 
 @Entity
+@ToString
 public class Ville {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

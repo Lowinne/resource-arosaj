@@ -88,8 +88,7 @@ public class MessageControllerV1  {
         message.setExpediteur(user);
         message.setDestinataire(user1);
         message.setMessage("Tu fais quoi la ?");
-        message.setDate(new Date(2024, 02, 28));
-        message.setTime(new Time(23, 36, 5));
+        message.setDate(new Time(23, 36, 5));
 
         ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
         String json = ow.writeValueAsString(message);
