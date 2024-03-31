@@ -10,14 +10,14 @@ import lombok.ToString;
 public class ResponseFile {
 
     private String name;
-    private String url;
     private String type;
     private long size;
+    private byte[] data;
 
-    public ResponseFile(String name, String url, String type, long size) {
+    public ResponseFile(String name, String type, long size, byte[] data) {
         this.name = name;
-        this.url = url;
         this.type = type;
         this.size = size;
+        this.data = data;
     }
 }

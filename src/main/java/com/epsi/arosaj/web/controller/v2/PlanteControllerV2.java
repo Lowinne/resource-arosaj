@@ -97,23 +97,17 @@ public class PlanteControllerV2 {
     }
 
     @GetMapping("/images")
-    @Operation(summary = "Find a list of photo for a plant id, with pseudo/pwd verification")
-    public @ResponseBody List<ResponseFile> getPhotoOfPlant(@RequestHeader String pseudo, @RequestHeader String userPwd, @RequestHeader Long planteId) {
-        Utilisateur user = userService.findUserByPseudo(pseudo, userPwd);
+    @Operation(summary = "Find a list of photo for a plant id")
+    public @ResponseBody List<ResponseFile> getPhotoOfPlant( @RequestHeader Long planteId) {
         try {
             List<Photo> photoList = planteService.getAllPhotoOfPlante(planteId);
             List<ResponseFile> files = photoList.stream()
                     .map(photo -> {
-                        String fileDownloadUri = ServletUriComponentsBuilder
-                                .fromCurrentContextPath()
-                                .path("/files/")
-                                .path(String.valueOf(photo.getId()))
-                                .toUriString();
                         return new ResponseFile(
                                 photo.getName(),
-                                fileDownloadUri,
                                 photo.getType(),
-                                photo.getData().length);
+                                photo.getData().length,
+                                photo.getData());
                     })
                     .collect(Collectors.toList());
 
