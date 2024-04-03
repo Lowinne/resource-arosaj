@@ -224,6 +224,7 @@ public class UserService {
         Utilisateur user1 = new Utilisateur();
         Utilisateur user2 = new Utilisateur();
         Utilisateur user3 = new Utilisateur();
+        Utilisateur user4 = new Utilisateur();
 
         user1.setNom(randomAlphabetic(5));
         user1.setPrenom(randomAlphabetic(5));
@@ -252,9 +253,19 @@ public class UserService {
         user3.setRole(roleService.getRoleInTable("G"));
         user3.setVille(villeService.ifNotExistSave(randomAlphabetic(5), "75012"));
 
+        user4.setNom("PRINCE");
+        user4.setPrenom("Boris");
+        user4.setEmail("test");
+        user4.setPseudo("test");
+        user4.setPwd("12345");
+        user4.setRue("10 rue de la fournes");
+        user4.setRole(roleService.getRoleInTable("P"));
+        user4.setVille(villeService.ifNotExistSave(randomAlphabetic(5), "75012"));
+
         saveUserV1(user1);
         saveUserV1(user2);
         saveUserV1(user3);
+        saveUserV1(user4);
 
     }
 
