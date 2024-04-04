@@ -9,11 +9,11 @@ import com.epsi.arosaj.persistence.model.Ville;
 public class UserMapper {
     public static UserPublicDto convertEntityToUserPublicDto(Utilisateur user) {
         UserPublicDto userPublicDto = new UserPublicDto();
-        userPublicDto.setId(user.getId());
         userPublicDto.setFirstName(user.getPrenom());
         userPublicDto.setLastName(user.getNom());
         userPublicDto.setEmail(user.getEmail());
         userPublicDto.setRole(user.getRole().getRole());
+        userPublicDto.setPseudo(user.getPseudo());
         return userPublicDto;
     }
 

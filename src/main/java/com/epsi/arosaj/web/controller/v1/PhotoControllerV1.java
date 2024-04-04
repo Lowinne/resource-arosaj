@@ -49,11 +49,8 @@ public class PhotoControllerV1 {
                     return "Please upload a file";
                 }
 
-                // Get the file data
-                byte[] imageData = file.getBytes();
-
                 // Upload the image
-                photoService.uploadImage(imageData,user,IdPlante);
+                photoService.uploadImage(file,user,IdPlante);
 
                 return "Image uploaded successfully";
             }

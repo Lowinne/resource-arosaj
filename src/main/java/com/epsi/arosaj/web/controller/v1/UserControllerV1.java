@@ -109,10 +109,11 @@ public class UserControllerV1 {
     
     @GetMapping(path = "/plante")
     @Operation(summary = "Donne la liste des plantes d'un utilisateur")
-    public @ResponseBody List<Plante> getPlanteOfUser(@RequestHeader Long idUser, @RequestHeader String pwd ){
-        if(authService.isUserAuth(idUser,pwd)){
+    public @ResponseBody List<Plante> getPlanteOfUser(@RequestHeader String pseudo){
+        Utilisateur user = userService.findByPseudo(pseudo).get(0);
+        if(user != null) {
             try{
-                List<Plante> planteList = planteService.getAllPlanteOfUser(idUser);
+                List<Plante> planteList = planteService.getAllPlanteOfUser(user.getId());
                 return planteList;
             }catch (Exception e){
                 logger.error("getPlanteOfUser: Retreving plantes failed :",e);

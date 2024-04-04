@@ -3,8 +3,11 @@ package com.epsi.arosaj.service;
 import com.epsi.arosaj.persistence.dto.UserDto;
 import com.epsi.arosaj.persistence.dto.UserPublicDto;
 import com.epsi.arosaj.persistence.dto.mapper.UserMapper;
+import com.epsi.arosaj.persistence.model.Message;
 import com.epsi.arosaj.persistence.model.Role;
+import com.epsi.arosaj.persistence.model.TypeEnum;
 import com.epsi.arosaj.persistence.model.Utilisateur;
+import com.epsi.arosaj.persistence.repository.MessageRepository;
 import com.epsi.arosaj.persistence.repository.UserRepository;
 import com.epsi.arosaj.persistence.util.NullChecker;
 import com.epsi.arosaj.web.exception.FindAnotherPseudoException;
@@ -38,6 +41,9 @@ public class UserService {
 
     @Autowired
     private VilleService villeService;
+
+    @Autowired
+    private MessageRepository messageRepository;
 
     public Utilisateur saveUser(UserDto userDto){
         logger.info("saveUser");
@@ -108,7 +114,24 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public List findByPseudo(String pseudo){
+    public List<Utilisateur> findAllGardien() {
+        logger.info("findAll");
+        Iterable<Utilisateur> listAllUser = findAll();
+        List<Utilisateur> listUser = new ArrayList<Utilisateur>();
+        if(listAllUser != null) {
+            for(Utilisateur user : listAllUser){
+                if(user.getRole().getCode() == TypeEnum.GARDIEN){
+                    listUser.add(user);
+                }
+            }
+        }
+        if(listUser.isEmpty()){
+            throw new UserNotFoundException("No gardien found");
+        }
+        return listUser;
+    }
+
+    public List<Utilisateur> findByPseudo(String pseudo){
         logger.info("findByPseudo : " + pseudo);
         return userRepository.findByPseudo(pseudo);
     }
@@ -163,6 +186,24 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    public List<Message> getAllMessage(){
+        Iterable<Message> iterableMessage = messageRepository.findAll();
+        List<Message> listMessage = new ArrayList<Message>();
+        if(iterableMessage != null){
+
+            for(Message m : iterableMessage){
+                listMessage.add(m);
+            }
+        }else { throw new UserNotFoundException("Pas de message correspondant"); }
+        return listMessage;
+
+
+    }
+
+    public Message saveMessage(Message message) {
+        return message = messageRepository.save(message);
+    }
+
     public Iterable<Role> getAllRole(){
         return roleService.getAllRole();
     }
@@ -171,9 +212,9 @@ public class UserService {
     @EventListener(ApplicationReadyEvent.class)
     public void initRoleV1(){
         logger.info("Initialisation of the table Role");
-        Role role1 = new Role("B","Botaniste");
-        Role role2 = new Role("P","Proprietaire");
-        Role role3 = new Role("G","Gardien");
+        Role role1 = new Role(TypeEnum.BOTANISTE,"Botaniste");
+        Role role2 = new Role(TypeEnum.PROPIETAIRE,"Proprietaire");
+        Role role3 = new Role(TypeEnum.GARDIEN,"Gardien");
 
         roleService.saveRole(role1);
         roleService.saveRole(role2);
@@ -183,6 +224,7 @@ public class UserService {
         Utilisateur user1 = new Utilisateur();
         Utilisateur user2 = new Utilisateur();
         Utilisateur user3 = new Utilisateur();
+        Utilisateur user4 = new Utilisateur();
 
         user1.setNom(randomAlphabetic(5));
         user1.setPrenom(randomAlphabetic(5));
@@ -211,12 +253,21 @@ public class UserService {
         user3.setRole(roleService.getRoleInTable("G"));
         user3.setVille(villeService.ifNotExistSave(randomAlphabetic(5), "75012"));
 
+        user4.setNom("PRINCE");
+        user4.setPrenom("Boris");
+        user4.setEmail("test");
+        user4.setPseudo("test");
+        user4.setPwd("12345");
+        user4.setRue("10 rue de la fournes");
+        user4.setRole(roleService.getRoleInTable("P"));
+        user4.setVille(villeService.ifNotExistSave(randomAlphabetic(5), "75012"));
+
         saveUserV1(user1);
         saveUserV1(user2);
         saveUserV1(user3);
+        saveUserV1(user4);
 
     }
-
 
 
 

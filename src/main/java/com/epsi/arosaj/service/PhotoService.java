@@ -8,8 +8,13 @@ import com.epsi.arosaj.persistence.repository.PhotoRepository;
 import com.epsi.arosaj.persistence.repository.PlanteRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 public class PhotoService {
@@ -19,12 +24,16 @@ public class PhotoService {
     private PlanteRepository planteRepository;
     @Autowired
     private PhotoPlanteRepository photoPlanteRepository;
-    public Photo uploadImage(byte[] imageData, Utilisateur user, Long planteId) {
+    public Photo uploadImage(MultipartFile file, Utilisateur user, Long planteId) throws IOException {
+
+
         PhotoPlante photoPlante = new PhotoPlante();
         photoPlante.setPlante(planteRepository.findById(planteId).get());
 
         Photo photo = new Photo();
-        photo.setData(imageData);
+        photo.setData(file.getBytes());
+        photo.setType(file.getContentType());
+        photo.setName(StringUtils.cleanPath(file.getOriginalFilename()));
         photo.setUtilisateur(user);
         photo.setPhotoPlante(photoPlante);
 
@@ -33,7 +42,13 @@ public class PhotoService {
         photoPlante = photoPlanteRepository.save(photoPlante);
         Optional<Photo> optionalPhoto = photoPlante.getPhotoList()
                 .stream()
-                .filter(p -> p.getUtilisateur().getId() == user.getId() && p.getData() == imageData)
+                .filter(p -> {
+                    try {
+                        return p.getUtilisateur().getId() == user.getId() && p.getData() == file.getBytes();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                })
                 .findFirst();
 
         photo = photoRepository.save(optionalPhoto.get());
@@ -43,4 +58,13 @@ public class PhotoService {
 
         return photo;
     }
+
+    public Photo getPhoto(Long id){
+        return photoRepository.findById(id).get();
+    }
+
+    public Iterable<Photo> getAllFiles() {
+        return photoRepository.findAll() ;
+    }
+
 }

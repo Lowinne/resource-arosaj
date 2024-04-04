@@ -1,10 +1,17 @@
 package com.epsi.arosaj.web.controller.v2;
 
+import com.epsi.arosaj.persistence.dto.MessageDto;
 import com.epsi.arosaj.persistence.dto.UserDto;
 import com.epsi.arosaj.persistence.dto.UserPublicDto;
+import com.epsi.arosaj.persistence.dto.mapper.MessageMapper;
+import com.epsi.arosaj.persistence.dto.mapper.UserMapper;
+import com.epsi.arosaj.persistence.model.Message;
 import com.epsi.arosaj.persistence.model.Role;
+import com.epsi.arosaj.persistence.model.TypeEnum;
 import com.epsi.arosaj.persistence.model.Utilisateur;
 import com.epsi.arosaj.service.UserService;
+import com.epsi.arosaj.web.exception.UserNotFoundException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -18,6 +25,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.naming.AuthenticationException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/user/v2")
@@ -31,8 +42,20 @@ public class UserControllerV2 {
     @Operation(summary = "Get all users")
     @GetMapping(path = "/")
     public Iterable<UserPublicDto> findAllPublicUser() {
-        logger.info("findAll");
+        logger.info("findAllPublicUser");
         return userService.getAllUsers();
+    }
+
+    @Operation(summary = "Get all gardien")
+    @GetMapping(path = "/gardiens")
+    public List<UserPublicDto> findAllPublicUserGardien() {
+        logger.info("findAllPublicUserGardien");
+        Iterable<Utilisateur> iterableUsers = userService.findAllGardien();
+        List<UserPublicDto> userPublicDtoList = new ArrayList<UserPublicDto>();
+        for(Utilisateur user : iterableUsers){
+            userPublicDtoList.add(UserMapper.convertEntityToUserPublicDto(user));
+        }
+        return userPublicDtoList;
     }
 
     @Operation(summary = "Find a user by its pseudo")
@@ -102,6 +125,38 @@ public class UserControllerV2 {
     public Utilisateur findOne(@Parameter(description = "id of user to be searched") @PathVariable Long id) {
         logger.info("findOne : " + id);
         return userService.findOne(id);
+    }
+
+    @PostMapping(path = "/message/send")
+    @Operation(summary = "send a message with pseudo/pwd verification, Proprietaire to gardien or gardien to Proprietaire")
+    public @ResponseBody MessageDto newMessage(@RequestHeader String senderPseudo, @RequestHeader String pwd, @RequestHeader String receiverPseudo, @RequestHeader String messageContent) throws JsonProcessingException {
+
+        Utilisateur sender = userService.findUserByPseudo(senderPseudo,pwd);
+        if(sender != null){
+            Utilisateur receiver = userService.findByPseudo(receiverPseudo).get(0);
+            if(receiver != null){
+                Message message = new Message();
+                message.setMessage(messageContent);
+                message.setExpediteur(sender);
+                message.setDestinataire(receiver);
+                message = userService.saveMessage(message);
+                return MessageMapper.convertMessageToMessageDto(message);
+            } else { throw new UserNotFoundException("receiver not found"); }
+        }
+        throw new RuntimeException("Erreur :(");
+    }
+
+    @GetMapping(path = "/message/get")
+    @Operation(summary = "get all messages of user with pseudo/pwd verification")
+    public @ResponseBody List<MessageDto> getAllMessageOfUser(@RequestHeader String pseudo, @RequestHeader String pwd){
+        Utilisateur user = userService.findUserByPseudo(pseudo,pwd);
+        List<MessageDto> listMessageOfUser = userService.getAllMessage().stream()
+                .filter(message -> message.getDestinataire().getPseudo().equals(user.getPseudo()) ||
+                        message.getExpediteur().getPseudo().equals(user.getPseudo()))
+                .map(e -> { MessageDto messageDto = MessageMapper.convertMessageToMessageDto(e); return messageDto; })
+                .collect(Collectors.toList());
+        return listMessageOfUser;
+
     }
 
 

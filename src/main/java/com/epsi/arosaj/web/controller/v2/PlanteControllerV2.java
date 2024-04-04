@@ -1,6 +1,10 @@
 package com.epsi.arosaj.web.controller.v2;
 
 import com.epsi.arosaj.persistence.dto.ConseilDto;
+import com.epsi.arosaj.persistence.dto.MessageDto;
+import com.epsi.arosaj.persistence.dto.mapper.MessageMapper;
+import com.epsi.arosaj.web.exception.UserNotFoundException;
+import com.epsi.arosaj.web.message.ResponseFile;
 import com.epsi.arosaj.persistence.model.*;
 import com.epsi.arosaj.service.PhotoService;
 import com.epsi.arosaj.service.PlanteService;
@@ -15,9 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 //lux
 @CrossOrigin(origins = "*")
@@ -46,7 +52,7 @@ public class PlanteControllerV2 {
         }else {
             try{
                 Utilisateur user = userService.findUserByPseudo(pseudo,userPwd);
-                if(!user.getRole().getCode().equals("P")){
+                if(!user.getRole().getCode().equals(TypeEnum.PROPIETAIRE)){
                     logger.error("addPlante: Role invalid");
                     throw new UnauthorizedException("Invalid user role");
                 }else{
@@ -55,11 +61,9 @@ public class PlanteControllerV2 {
                     Plante plante = planteService.savePlante(user,nom,desc);
 
                     if(plante != null){
-                        // Get the file data
-                        byte[] imageData = file.getBytes();
                         // Upload the image
                         try{
-                            photoService.uploadImage(imageData,user,plante.getId());
+                            photoService.uploadImage(file,user,plante.getId());
                         } catch (RuntimeException e){
                             logger.error("Fail saving first image of plant", e);
                         }
@@ -83,34 +87,42 @@ public class PlanteControllerV2 {
         }
         try {
             Utilisateur user = userService.findUserByPseudo(pseudo,userPwd);
-            byte[] imageData = file.getBytes();
 
             // Upload the image
-            return photoService.uploadImage(imageData,user,planteId);
+            return photoService.uploadImage(file,user,planteId);
 
         } catch (IOException e) {
-            throw new RuntimeException("Failed saving the photo of user");
+            throw new RuntimeException("Failed saving the photo of plante of user");
         }
     }
 
     @GetMapping("/images")
-    @Operation(summary = "Find a list of photo for a plant id, with pseudo/pwd verification")
-    public @ResponseBody List<Photo> getPhotoOfPlant(@RequestHeader String pseudo, @RequestHeader String userPwd, @RequestHeader Long planteId) {
-        Utilisateur user = userService.findUserByPseudo(pseudo,userPwd);
-            try{
-                List<Photo> photoList = planteService.getAllPhotoOfPlante(planteId);
-                return photoList;
-            }catch(Exception e){
-                logger.error("Retreving image failed :",e);
-            }
-        throw new RuntimeException("Something hapenned :( when finding photos of plant");
+    @Operation(summary = "Find a list of photo for a plant id")
+    public @ResponseBody List<ResponseFile> getPhotoOfPlant( @RequestHeader Long planteId) {
+        try {
+            List<Photo> photoList = planteService.getAllPhotoOfPlante(planteId);
+            List<ResponseFile> files = photoList.stream()
+                    .map(photo -> {
+                        return new ResponseFile(
+                                photo.getName(),
+                                photo.getType(),
+                                photo.getData().length,
+                                photo.getData());
+                    })
+                    .collect(Collectors.toList());
+
+            return files; // Return the list of ResponseFileDto
+        } catch (Exception e) {
+            logger.error("Retrieving image failed: ", e);
+            throw new RuntimeException("Something happened :( when finding photos of plant");
+        }
     }
 
     @PostMapping(path = "/botaniste/conseil/add")
     @Operation(summary = "Ajoute un conseil à une plante avec verification pseudo/pwd ")
     public @ResponseBody ConseilDto addConseil(@RequestHeader String botanistePseudo, @RequestHeader String pwd, @RequestHeader Long planteId, @RequestHeader String conseil) throws JsonProcessingException {
         Utilisateur user = userService.findUserByPseudo(botanistePseudo,pwd);
-        if(user.getRole().getCode().equals("B")){
+        if(user.getRole().getCode().equals(TypeEnum.BOTANISTE)){
             Plante plante = planteService.getPlante(planteId);
             return planteService.saveConseil(user, plante, conseil);
         }
@@ -122,6 +134,7 @@ public class PlanteControllerV2 {
     public @ResponseBody List<ConseilDto> getConseil(@RequestHeader Long planteId){
         return planteService.getConseil(planteId);
     }
+
 
 
 
