@@ -106,6 +106,7 @@ public class UserControllerV1 {
 
     }
 
+    
     @GetMapping(path = "/plante")
     @Operation(summary = "Donne la liste des plantes d'un utilisateur")
     public @ResponseBody List<Plante> getPlanteOfUser(@RequestHeader Long idUser, @RequestHeader String pwd ){
