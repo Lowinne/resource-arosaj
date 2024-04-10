@@ -12,11 +12,13 @@ public class PlanteDto {
     private String nom;
     private String description;
     private String prenomProprio;
+    private String pseudoProprio;
 
-    public PlanteDto(Long id, String nom, String description, String prenomProprio) {
+    public PlanteDto(Long id, String nom, String description, String prenomProprio, String pseudoProprio) {
         this.id = id;
         this.nom = nom;
         this.description = description;
         this.prenomProprio = prenomProprio;
+        this.pseudoProprio = pseudoProprio;
     }
 }

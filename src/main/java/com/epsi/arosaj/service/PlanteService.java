@@ -75,7 +75,7 @@ public class PlanteService {
         }
         List<PlanteDto> planteList = new ArrayList<>();
         for (Plante plante : planteIterable ) {
-            PlanteDto planteDto = new PlanteDto(plante.getId(), plante.getNom(), plante.getDescription(), plante.getUtilisateurPlante().getProprietaire().getPrenom());
+            PlanteDto planteDto = new PlanteDto(plante.getId(), plante.getNom(), plante.getDescription(), plante.getUtilisateurPlante().getProprietaire().getPrenom(), plante.getUtilisateurPlante().getProprietaire().getPseudo());
             planteList.add(planteDto);
         }
         return planteList;
