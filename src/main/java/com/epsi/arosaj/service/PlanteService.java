@@ -1,6 +1,7 @@
 package com.epsi.arosaj.service;
 
 import com.epsi.arosaj.persistence.dto.ConseilDto;
+import com.epsi.arosaj.persistence.dto.PlanteDto;
 import com.epsi.arosaj.persistence.model.*;
 import com.epsi.arosaj.persistence.repository.BotanistePlanteRepository;
 import com.epsi.arosaj.persistence.repository.PhotoPlanteRepository;
@@ -67,14 +68,15 @@ public class PlanteService {
 
     }
 
-    public List<Plante> getAllPlante(){
+    public List<PlanteDto> getAllPlante(){
         Iterable<Plante> planteIterable = planteRepository.findAll();
         if (planteIterable == null) {
             throw new UserNotFoundException("Plante Not Found");
         }
-        List<Plante> planteList = new ArrayList<>();
+        List<PlanteDto> planteList = new ArrayList<>();
         for (Plante plante : planteIterable ) {
-            planteList.add(plante);
+            PlanteDto planteDto = new PlanteDto(plante.getNom(), plante.getDescription(), plante.getUtilisateurPlante().getProprietaire().getPrenom());
+            planteList.add(planteDto);
         }
         return planteList;
     }
