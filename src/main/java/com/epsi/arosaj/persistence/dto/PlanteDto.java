@@ -8,11 +8,13 @@ import lombok.ToString;
 @Setter
 @ToString
 public class PlanteDto {
+    private Long id;
     private String nom;
     private String description;
     private String prenomProprio;
 
-    public PlanteDto(String nom, String description, String prenomProprio) {
+    public PlanteDto(Long id, String nom, String description, String prenomProprio) {
+        this.id = id;
         this.nom = nom;
         this.description = description;
         this.prenomProprio = prenomProprio;
