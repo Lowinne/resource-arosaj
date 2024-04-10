@@ -67,6 +67,18 @@ public class PlanteService {
 
     }
 
+    public List<Plante> getAllPlante(){
+        Iterable<Plante> planteIterable = planteRepository.findAll();
+        if (planteIterable == null) {
+            throw new UserNotFoundException("Plante Not Found");
+        }
+        List<Plante> planteList = new ArrayList<>();
+        for (Plante plante : planteIterable ) {
+            planteList.add(plante);
+        }
+        return planteList;
+    }
+
     public Plante savePlante(Utilisateur user, String nom, String desc){
         UtilisateurPlante utilisateurPlante = new UtilisateurPlante();
         utilisateurPlante.setProprietaire(user);
@@ -114,4 +126,6 @@ public class PlanteService {
         }
         return conseils;
     }
+
+
 }

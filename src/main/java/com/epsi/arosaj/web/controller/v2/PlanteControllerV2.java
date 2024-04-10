@@ -135,7 +135,11 @@ public class PlanteControllerV2 {
         return planteService.getConseil(planteId);
     }
 
-
+    @GetMapping(path = "/all")
+    @Operation(summary = "Get all plante in database")
+    public @ResponseBody List<Plante> getAllPlante(){
+        return planteService.getAllPlante();
+    }
 
 
 }
