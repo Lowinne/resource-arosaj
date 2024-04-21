@@ -2,6 +2,7 @@ package com.epsi.arosaj.web.controller.v2;
 
 import com.epsi.arosaj.persistence.dto.ConseilDto;
 import com.epsi.arosaj.persistence.dto.MessageDto;
+import com.epsi.arosaj.persistence.dto.PlanteDto;
 import com.epsi.arosaj.persistence.dto.mapper.MessageMapper;
 import com.epsi.arosaj.web.exception.UserNotFoundException;
 import com.epsi.arosaj.web.message.ResponseFile;
@@ -135,7 +136,11 @@ public class PlanteControllerV2 {
         return planteService.getConseil(planteId);
     }
 
-
+    @GetMapping(path = "/all")
+    @Operation(summary = "Get all plante in database")
+    public @ResponseBody List<PlanteDto> getAllPlante(){
+        return planteService.getAllPlante();
+    }
 
 
 }
