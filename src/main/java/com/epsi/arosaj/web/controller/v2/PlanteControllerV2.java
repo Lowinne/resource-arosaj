@@ -123,7 +123,7 @@ public class PlanteControllerV2 {
     @Operation(summary = "Ajoute un conseil à une plante avec verification pseudo/pwd ")
     public @ResponseBody ConseilDto addConseil(@RequestHeader String botanistePseudo, @RequestHeader String pwd, @RequestHeader Long planteId, @RequestHeader String conseil) throws JsonProcessingException {
         Utilisateur user = userService.findUserByPseudo(botanistePseudo,pwd);
-        if(user.getRole().getCode().equals(TypeEnum.BOTANISTE)){
+        if(user.getRole().getCode().equals(TypeEnum.BOTANISTE)  || user.getRole().getCode().equals(TypeEnum.GARDIEN)){
             Plante plante = planteService.getPlante(planteId);
             return planteService.saveConseil(user, plante, conseil);
         }
