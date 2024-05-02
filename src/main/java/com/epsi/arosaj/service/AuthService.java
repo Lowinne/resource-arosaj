@@ -1,7 +1,7 @@
 package com.epsi.arosaj.service;
 
 import com.epsi.arosaj.persistence.model.Plante;
-import com.epsi.arosaj.persistence.model.Utilisateur;
+import com.epsi.arosaj.persistence.model.utilisateur;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ public class AuthService {
     private static final Logger logger = LoggerFactory.getLogger(AuthService.class);
     public boolean isUserAuth(Long id, String pwd){
         logger.info("isUserAuth: Verification mot de passe");
-        Utilisateur user = userService.getUserByIdV1(id);
+        utilisateur user = userService.getUserByIdV1(id);
         return user.getPwd().equals(pwd);
     }
 

@@ -41,7 +41,7 @@ public class PlanteControllerV1 {
         }else {
             try{
                 long id = Long.parseLong(userId);
-                Utilisateur user = userService.getUserByIdV1(id);
+                utilisateur user = userService.getUserByIdV1(id);
                 if(!user.getPwd().equals(userPwd) || !user.getRole().getCode().equals("P")){
                     logger.error("addPlante: Mot de passe érronné");
                     return "Mot de passe ou role érronné";

@@ -2,7 +2,7 @@ package com.epsi.arosaj.web.controller.v1;
 
 import com.epsi.arosaj.persistence.model.BotanistePlante;
 import com.epsi.arosaj.persistence.model.Plante;
-import com.epsi.arosaj.persistence.model.Utilisateur;
+import com.epsi.arosaj.persistence.model.utilisateur;
 import com.epsi.arosaj.persistence.repository.*;
 import com.epsi.arosaj.service.*;
 import com.epsi.arosaj.web.exception.FindAnotherPseudoException;
@@ -59,14 +59,14 @@ public class UserControllerV1 {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User found ",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Utilisateur.class)) }),
+                            schema = @Schema(implementation = utilisateur.class)) }),
             @ApiResponse(responseCode = "400", description = "Parameter Missing or Pseudo already taken",
                     content = @Content) })
     @PostMapping(path = "/add")
-    public @ResponseBody Utilisateur addUser(@RequestHeader String nom, @RequestHeader String prenom, @RequestHeader String pseudo, @RequestHeader String email, @RequestHeader String rue,
-                                      @RequestHeader String codeRole, @RequestHeader String nomVille, @RequestHeader String codePostale, @RequestHeader String pwd) throws JsonProcessingException {
+    public @ResponseBody utilisateur addUser(@RequestHeader String nom, @RequestHeader String prenom, @RequestHeader String pseudo, @RequestHeader String email, @RequestHeader String rue,
+                                             @RequestHeader String codeRole, @RequestHeader String nomVille, @RequestHeader String codePostale, @RequestHeader String pwd) throws JsonProcessingException {
         logger.info("addUser: Adding new user endpoint");
-        Utilisateur user = new Utilisateur();
+        utilisateur user = new utilisateur();
         if (nom == null || prenom == null || pseudo == null || email == null ||
                 rue == null || codeRole == null || nomVille == null || codePostale == null || pwd == null){
             logger.error("addUser: One or more parameters are null");
@@ -95,9 +95,9 @@ public class UserControllerV1 {
 
     @GetMapping(path = "/get")
     @Operation(summary = "Find a user by its pseudo and password")
-    public @ResponseBody Utilisateur getUser(@RequestHeader String pseudo, @RequestHeader String pwd){
+    public @ResponseBody utilisateur getUser(@RequestHeader String pseudo, @RequestHeader String pwd){
         logger.info("getUser: get the user : "+ pseudo);
-        Utilisateur user = new Utilisateur();
+        utilisateur user = new utilisateur();
         user = userRepository.findUserByPseudo(pseudo, pwd);
         if (user == null){throw new UserNotFoundException("Aucun utilisateur ne correspond");}
         //ObjectWriter ow = new ObjectMapper().writer().withDefaultPrettyPrinter();
@@ -110,7 +110,7 @@ public class UserControllerV1 {
     @GetMapping(path = "/plante")
     @Operation(summary = "Donne la liste des plantes d'un utilisateur")
     public @ResponseBody List<Plante> getPlanteOfUser(@RequestHeader String pseudo){
-        Utilisateur user = userService.findByPseudo(pseudo).get(0);
+        utilisateur user = userService.findByPseudo(pseudo).get(0);
         if(user != null) {
             try{
                 List<Plante> planteList = planteService.getAllPlanteOfUser(user.getId());
@@ -126,7 +126,7 @@ public class UserControllerV1 {
     @Operation(summary = "Ajoute un conseil à une plante")
     public @ResponseBody BotanistePlante addConseil(@RequestHeader Long botanisteId, @RequestHeader String pwd, @RequestHeader Long planteId, @RequestHeader String conseil) throws JsonProcessingException {
         if(authService.isUserAuth(botanisteId,pwd)){
-            Utilisateur user = userService.getUserByIdV1(botanisteId);
+            utilisateur user = userService.getUserByIdV1(botanisteId);
             Plante plante = planteService.getPlante(planteId);
             if(user.getRole().getCode().equals("B")){
                 BotanistePlante botanistePlante = new BotanistePlante();

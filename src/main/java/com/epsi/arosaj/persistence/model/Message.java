@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
-import java.sql.Time;
 import java.util.Date;
 @ToString
 @Getter
@@ -17,11 +16,11 @@ public class Message {
     private long id;
     @ManyToOne
     @JoinColumn(name = "expe_id", referencedColumnName = "id")
-    private Utilisateur expediteur;
+    private utilisateur expediteur;
 
     @ManyToOne
     @JoinColumn(name = "dest_id", referencedColumnName = "id")
-    private Utilisateur destinataire;
+    private utilisateur destinataire;
 
     @Column(nullable = false)
     private String message;

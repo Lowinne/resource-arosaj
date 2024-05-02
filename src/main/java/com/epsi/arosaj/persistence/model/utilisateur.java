@@ -2,21 +2,17 @@ package com.epsi.arosaj.persistence.model;
 
 import jakarta.persistence.*;
 @Entity
-public class Utilisateur {
+@Table(name = "utilisateur")
+public class utilisateur {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(nullable = false)
     private String nom;
-    @Column(nullable = false)
     private String prenom;
-    @Column(unique=true, nullable = false)
+    @Column(unique=true)
     private String pseudo;
-    @Column(nullable = false)
     private String email;
-    @Column(nullable = false)
     private String pwd;
-    @Column(nullable = false)
     private String rue;
     @ManyToOne
     @JoinColumn(name = "ville_id", referencedColumnName = "id", unique = false, nullable = false)
@@ -25,7 +21,7 @@ public class Utilisateur {
     @JoinColumn(name = "role_id", referencedColumnName = "id", unique = false, nullable = false)
     private Role role;
 
-    public Utilisateur() {
+    public utilisateur() {
     }
 
     @Override

@@ -15,7 +15,7 @@ public class BotanistePlante {
     private Plante plante;
     @ManyToOne
     @JoinColumn(name = "bota_id", referencedColumnName = "id")
-    private Utilisateur botaniste;
+    private utilisateur botaniste;
 
     private String conseil;
 
@@ -51,11 +51,11 @@ public class BotanistePlante {
         this.plante = plante;
     }
 
-    public Utilisateur getBotaniste() {
+    public utilisateur getBotaniste() {
         return botaniste;
     }
 
-    public void setBotaniste(Utilisateur botaniste) {
+    public void setBotaniste(utilisateur botaniste) {
         this.botaniste = botaniste;
     }
 }

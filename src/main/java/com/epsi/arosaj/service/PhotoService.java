@@ -2,7 +2,7 @@ package com.epsi.arosaj.service;
 
 import com.epsi.arosaj.persistence.model.Photo;
 import com.epsi.arosaj.persistence.model.PhotoPlante;
-import com.epsi.arosaj.persistence.model.Utilisateur;
+import com.epsi.arosaj.persistence.model.utilisateur;
 import com.epsi.arosaj.persistence.repository.PhotoPlanteRepository;
 import com.epsi.arosaj.persistence.repository.PhotoRepository;
 import com.epsi.arosaj.persistence.repository.PlanteRepository;
@@ -12,9 +12,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 @Service
 public class PhotoService {
@@ -24,7 +22,7 @@ public class PhotoService {
     private PlanteRepository planteRepository;
     @Autowired
     private PhotoPlanteRepository photoPlanteRepository;
-    public Photo uploadImage(MultipartFile file, Utilisateur user, Long planteId) throws IOException {
+    public Photo uploadImage(MultipartFile file, utilisateur user, Long planteId) throws IOException {
 
 
         PhotoPlante photoPlante = new PhotoPlante();

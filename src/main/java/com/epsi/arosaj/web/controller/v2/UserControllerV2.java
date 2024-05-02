@@ -7,8 +7,7 @@ import com.epsi.arosaj.persistence.dto.mapper.MessageMapper;
 import com.epsi.arosaj.persistence.dto.mapper.UserMapper;
 import com.epsi.arosaj.persistence.model.Message;
 import com.epsi.arosaj.persistence.model.Role;
-import com.epsi.arosaj.persistence.model.TypeEnum;
-import com.epsi.arosaj.persistence.model.Utilisateur;
+import com.epsi.arosaj.persistence.model.utilisateur;
 import com.epsi.arosaj.service.UserService;
 import com.epsi.arosaj.web.exception.UserNotFoundException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -28,7 +27,6 @@ import javax.naming.AuthenticationException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @RestController
 @RequestMapping("/api/user/v2")
@@ -50,9 +48,9 @@ public class UserControllerV2 {
     @GetMapping(path = "/gardiens")
     public List<UserPublicDto> findAllPublicUserGardien() {
         logger.info("findAllPublicUserGardien");
-        Iterable<Utilisateur> iterableUsers = userService.findAllGardien();
+        Iterable<utilisateur> iterableUsers = userService.findAllGardien();
         List<UserPublicDto> userPublicDtoList = new ArrayList<UserPublicDto>();
-        for(Utilisateur user : iterableUsers){
+        for(utilisateur user : iterableUsers){
             userPublicDtoList.add(UserMapper.convertEntityToUserPublicDto(user));
         }
         return userPublicDtoList;
@@ -60,7 +58,7 @@ public class UserControllerV2 {
 
     @Operation(summary = "Find a user by its pseudo")
     @GetMapping("/pseudo")
-    public Utilisateur findByPseudo(@Parameter(description = "pseudo of user to be searched") @RequestBody UserDto userDto) {
+    public utilisateur findByPseudo(@Parameter(description = "pseudo of user to be searched") @RequestBody UserDto userDto) {
         String pseudo = userDto.getPseudo();
         logger.info("findByPseudo : " + pseudo);
         return userService.findUserByPseudo(pseudo, userDto.getPwd());
@@ -70,12 +68,12 @@ public class UserControllerV2 {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User created",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Utilisateur.class)) }),
+                            schema = @Schema(implementation = utilisateur.class)) }),
             @ApiResponse(responseCode = "400", description = "Find another pseudo",
                     content = @Content)})
     @PostMapping(path = "/add")
     @ResponseStatus(HttpStatus.CREATED)
-    public Utilisateur saveUser(@Parameter(description = "user to be created") @RequestBody UserDto userDto) {
+    public utilisateur saveUser(@Parameter(description = "user to be created") @RequestBody UserDto userDto) {
         logger.info("create Dto: " + userDto.toString());
         return userService.saveUser(userDto);
     }
@@ -84,13 +82,13 @@ public class UserControllerV2 {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User found and updated",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Utilisateur.class)) }),
+                            schema = @Schema(implementation = utilisateur.class)) }),
             @ApiResponse(responseCode = "400", description = "Id and User id don't match",
                     content = @Content),
             @ApiResponse(responseCode = "404", description = "User not found",
                     content = @Content) })
     @PutMapping("/")
-    public Utilisateur updateUser(@Parameter(description = "new information for updating")@RequestBody UserDto userDto) throws AuthenticationException {
+    public utilisateur updateUser(@Parameter(description = "new information for updating")@RequestBody UserDto userDto) throws AuthenticationException {
         logger.info("updateUser : " + userDto.toString());
         return userService.updateUser(userDto);
     }
@@ -118,11 +116,11 @@ public class UserControllerV2 {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "User found ",
                     content = { @Content(mediaType = "application/json",
-                            schema = @Schema(implementation = Utilisateur.class)) }),
+                            schema = @Schema(implementation = utilisateur.class)) }),
             @ApiResponse(responseCode = "404", description = "User not found",
                     content = @Content) })
     @GetMapping("/{id}")
-    public Utilisateur findOne(@Parameter(description = "id of user to be searched") @PathVariable Long id) {
+    public utilisateur findOne(@Parameter(description = "id of user to be searched") @PathVariable Long id) {
         logger.info("findOne : " + id);
         return userService.findOne(id);
     }
@@ -131,9 +129,9 @@ public class UserControllerV2 {
     @Operation(summary = "send a message with pseudo/pwd verification, Proprietaire to gardien or gardien to Proprietaire")
     public @ResponseBody MessageDto newMessage(@RequestHeader String senderPseudo, @RequestHeader String pwd, @RequestHeader String receiverPseudo, @RequestHeader String messageContent) throws JsonProcessingException {
 
-        Utilisateur sender = userService.findUserByPseudo(senderPseudo,pwd);
+        utilisateur sender = userService.findUserByPseudo(senderPseudo,pwd);
         if(sender != null){
-            Utilisateur receiver = userService.findByPseudo(receiverPseudo).get(0);
+            utilisateur receiver = userService.findByPseudo(receiverPseudo).get(0);
             if(receiver != null){
                 Message message = new Message();
                 message.setMessage(messageContent);
@@ -149,7 +147,7 @@ public class UserControllerV2 {
     @GetMapping(path = "/message/get")
     @Operation(summary = "get all messages of user with pseudo/pwd verification")
     public @ResponseBody List<MessageDto> getAllMessageOfUser(@RequestHeader String pseudo, @RequestHeader String pwd){
-        Utilisateur user = userService.findUserByPseudo(pseudo,pwd);
+        utilisateur user = userService.findUserByPseudo(pseudo,pwd);
         List<MessageDto> listMessageOfUser = userService.getAllMessage().stream()
                 .filter(message -> message.getDestinataire().getPseudo().equals(user.getPseudo()) ||
                         message.getExpediteur().getPseudo().equals(user.getPseudo()))

@@ -15,9 +15,16 @@ public class RoleService {
     @Autowired
     private RoleRepository roleRepository;
 
-    public Role saveRole(Role role){
+    public Role saveRoleNotIfExist(Role role){
         logger.info("Saving a role : " + role.toString());
-        return roleRepository.save(role);
+        Role roleTemp = roleRepository.findByCode(role.getCode());
+        if(roleTemp == null){
+            return roleRepository.save(role);
+        }
+        else {
+            return roleTemp;
+        }
+
     }
 
     public Role getRoleInTable(String code){
@@ -32,7 +39,7 @@ public class RoleService {
     }
 
     public Role getRole(String code){
-        logger.info("Searching a role by code : " + code);
+        logger.info("Searching a role by code : " +  code);
         return roleRepository.findByCode(code);
     }
 

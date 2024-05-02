@@ -14,7 +14,7 @@ public class UtilisateurPlante {
 
     @ManyToOne
     @JoinColumn(name = "prop_id", referencedColumnName = "id")
-    private Utilisateur proprietaire;
+    private utilisateur proprietaire;
     @OneToMany(mappedBy="utilisateurPlante", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Plante> planteList;
@@ -23,11 +23,11 @@ public class UtilisateurPlante {
         planteList = new ArrayList<Plante>();
     }
 
-    public Utilisateur getProprietaire() {
+    public utilisateur getProprietaire() {
         return proprietaire;
     }
 
-    public void setProprietaire(Utilisateur proprietaire) {
+    public void setProprietaire(utilisateur proprietaire) {
         this.proprietaire = proprietaire;
     }
 

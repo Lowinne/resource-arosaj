@@ -56,7 +56,7 @@ public class PlanteService {
     }
 
     public List<Plante> getAllPlanteOfUser(Long id) {
-        Utilisateur user = userService.getUserByIdV1(id);
+        utilisateur user = userService.getUserByIdV1(id);
         String idU = Long.toString(user.getId());
         List<Plante> planteList = new ArrayList<Plante>();
         List<UtilisateurPlante> utilisateurPlanteList = utilisateurPlanteRepository.findByUserId(idU);
@@ -81,7 +81,7 @@ public class PlanteService {
         return planteList;
     }
 
-    public Plante savePlante(Utilisateur user, String nom, String desc){
+    public Plante savePlante(utilisateur user, String nom, String desc){
         UtilisateurPlante utilisateurPlante = new UtilisateurPlante();
         utilisateurPlante.setProprietaire(user);
 
@@ -103,7 +103,7 @@ public class PlanteService {
         return plante;
     }
 
-    public ConseilDto saveConseil(Utilisateur user, Plante plante, String conseil){
+    public ConseilDto saveConseil(utilisateur user, Plante plante, String conseil){
         BotanistePlante botanistePlante = new BotanistePlante();
         botanistePlante.setBotaniste(user);
         botanistePlante.setConseil(conseil);

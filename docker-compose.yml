@@ -2,8 +2,32 @@ version: '3'
 
 services:
   app:
-    image: lowinne/arosaj-server-image:latest
+    build: .
     container_name: aroserver
     restart: always
     ports:
       - "80:3000"
+    networks:
+      - springapimysql-net
+    environment:
+      - spring.datasource.url=jdbc:mysql://mysqldb:3306/arosaj
+    depends_on:
+      - mysqldb
+    volumes:
+      - .m2:/root/.m2
+
+  mysqldb:
+    image: "mysql:5.7.11"
+    restart: always
+    ports:
+      - 3306:3306
+    networks:
+      - springapimysql-net
+    environment:
+      MYSQL_DATABASE: arosaj
+      MYSQL_USER: webserver
+      MYSQL_PASSWORD: 12345
+      MYSQL_ROOT_PASSWORD: 12345
+
+networks:
+  springapimysql-net:

@@ -29,7 +29,7 @@ public class VilleService {
     }
 
     public Ville saveVille(Ville ville){
-        logger.info("Saving ville entity :"+ville.toString());
+        logger.info("Saving ville entity : " + ville);
         return villeRepository.save(ville);
     }
 }

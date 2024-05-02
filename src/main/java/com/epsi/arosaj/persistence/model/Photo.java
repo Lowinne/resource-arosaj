@@ -20,7 +20,7 @@ public class Photo {
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonIgnore // User already known
-    private Utilisateur utilisateur;
+    private com.epsi.arosaj.persistence.model.utilisateur utilisateur;
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "photoPlante_id", nullable = false)
     @JsonIgnore // Prevent infinite recursion
@@ -46,11 +46,11 @@ public class Photo {
         this.data = data;
     }
 
-    public Utilisateur getUtilisateur() {
+    public com.epsi.arosaj.persistence.model.utilisateur getUtilisateur() {
         return utilisateur;
     }
 
-    public void setUtilisateur(Utilisateur utilisateur) {
+    public void setUtilisateur(com.epsi.arosaj.persistence.model.utilisateur utilisateur) {
         this.utilisateur = utilisateur;
     }
 

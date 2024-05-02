@@ -1,7 +1,7 @@
 package com.epsi.arosaj;
 
 import com.epsi.arosaj.persistence.model.Role;
-import com.epsi.arosaj.persistence.model.Utilisateur;
+import com.epsi.arosaj.persistence.model.utilisateur;
 import com.epsi.arosaj.persistence.model.Ville;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
@@ -122,7 +122,7 @@ public class UserLiveTest {
 */
     // =============================== stub
 
-    private Utilisateur createRandomUser() {
+    private utilisateur createRandomUser() {
 
         Role role = new Role();
         role.setCode("P");
@@ -132,7 +132,7 @@ public class UserLiveTest {
         ville.setNom("Massy");
         ville.setCodePostale("91300");
 
-        Utilisateur user = new Utilisateur();
+        utilisateur user = new utilisateur();
         user.setNom(randomAlphabetic(10));
         user.setPrenom(randomAlphabetic(10));
         user.setPseudo(randomAlphabetic(10));
@@ -145,7 +145,7 @@ public class UserLiveTest {
         return user;
     }
 
-    private String createUserAsUri(Utilisateur user) {
+    private String createUserAsUri(utilisateur user) {
         Response response = RestAssured.given()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(user)

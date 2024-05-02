@@ -1,6 +1,6 @@
 package com.epsi.arosaj.web.controller.v1;
 
-import com.epsi.arosaj.persistence.model.Utilisateur;
+import com.epsi.arosaj.persistence.model.utilisateur;
 import com.epsi.arosaj.persistence.model.Photo;
 import com.epsi.arosaj.persistence.repository.PhotoRepository;
 import com.epsi.arosaj.service.AuthService;
@@ -39,7 +39,7 @@ public class PhotoControllerV1 {
         try {
             long id = Long.parseLong(userId);
             long IdPlante = Long.parseLong(planteId);
-            Utilisateur user = userService.getUserByIdV1(id);
+            utilisateur user = userService.getUserByIdV1(id);
             if(!authService.isUserAuth(id,userPwd)){
                 logger.error("addPhotoOfPlante: Mot de passe érronné");
                 return "Mot de passe érronné";

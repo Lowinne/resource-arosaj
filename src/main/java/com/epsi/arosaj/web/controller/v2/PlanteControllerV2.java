@@ -1,10 +1,7 @@
 package com.epsi.arosaj.web.controller.v2;
 
 import com.epsi.arosaj.persistence.dto.ConseilDto;
-import com.epsi.arosaj.persistence.dto.MessageDto;
 import com.epsi.arosaj.persistence.dto.PlanteDto;
-import com.epsi.arosaj.persistence.dto.mapper.MessageMapper;
-import com.epsi.arosaj.web.exception.UserNotFoundException;
 import com.epsi.arosaj.web.message.ResponseFile;
 import com.epsi.arosaj.persistence.model.*;
 import com.epsi.arosaj.service.PhotoService;
@@ -20,7 +17,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.io.IOException;
 import java.util.List;
@@ -52,7 +48,7 @@ public class PlanteControllerV2 {
             throw new ParameterMistakeException("One or more parameters needed null, file needed too");
         }else {
             try{
-                Utilisateur user = userService.findUserByPseudo(pseudo,userPwd);
+                utilisateur user = userService.findUserByPseudo(pseudo,userPwd);
                 if(!user.getRole().getCode().equals(TypeEnum.PROPIETAIRE)){
                     logger.error("addPlante: Role invalid");
                     throw new UnauthorizedException("Invalid user role");
@@ -87,7 +83,7 @@ public class PlanteControllerV2 {
             throw new ParameterMistakeException("One or more parameters needed null, file needed too");
         }
         try {
-            Utilisateur user = userService.findUserByPseudo(pseudo,userPwd);
+            utilisateur user = userService.findUserByPseudo(pseudo,userPwd);
 
             // Upload the image
             return photoService.uploadImage(file,user,planteId);
@@ -122,7 +118,7 @@ public class PlanteControllerV2 {
     @PostMapping(path = "/botaniste/conseil/add")
     @Operation(summary = "Ajoute un conseil à une plante avec verification pseudo/pwd ")
     public @ResponseBody ConseilDto addConseil(@RequestHeader String botanistePseudo, @RequestHeader String pwd, @RequestHeader Long planteId, @RequestHeader String conseil) throws JsonProcessingException {
-        Utilisateur user = userService.findUserByPseudo(botanistePseudo,pwd);
+        utilisateur user = userService.findUserByPseudo(botanistePseudo,pwd);
         if(user.getRole().getCode().equals(TypeEnum.BOTANISTE)){
             Plante plante = planteService.getPlante(planteId);
             return planteService.saveConseil(user, plante, conseil);
