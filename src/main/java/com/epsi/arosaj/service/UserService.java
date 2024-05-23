@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.naming.AuthenticationException;
@@ -44,6 +45,9 @@ public class UserService {
 
     @Autowired
     private MessageRepository messageRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     public Utilisateur saveUser(UserDto userDto){
         logger.info("saveUser");
@@ -248,7 +252,7 @@ public class UserService {
         user3.setPrenom("Boris");
         user3.setEmail("boris@provider.com");
         user3.setPseudo("Planteur");
-        user3.setPwd("12345");
+        user3.setPwd(passwordEncoder.encode("12345"));
         user3.setRue("10 rue de la fournes");
         user3.setRole(roleService.getRoleInTable("G"));
         user3.setVille(villeService.ifNotExistSave(randomAlphabetic(5), "75012"));
@@ -257,7 +261,7 @@ public class UserService {
         user4.setPrenom("Boris");
         user4.setEmail("test");
         user4.setPseudo("test");
-        user4.setPwd("12345");
+        user4.setPwd(passwordEncoder.encode("12345"));
         user4.setRue("10 rue de la fournes");
         user4.setRole(roleService.getRoleInTable("P"));
         user4.setVille(villeService.ifNotExistSave(randomAlphabetic(5), "75012"));
