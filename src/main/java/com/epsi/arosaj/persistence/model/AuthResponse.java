@@ -1,15 +1,17 @@
 package com.epsi.arosaj.persistence.model;
 
+import lombok.Getter;
+
+@Getter
 public class AuthResponse {
 
     private final String jwt;
 
-    public AuthResponse(String jwt) {
-        this.jwt = jwt;
-    }
+    private final Utilisateur utilisateur;
 
-    public String getJwt() {
-        return jwt;
+    public AuthResponse(String jwt, Utilisateur utilisateur) {
+        this.jwt = jwt;
+        this.utilisateur = utilisateur;
     }
 
 }

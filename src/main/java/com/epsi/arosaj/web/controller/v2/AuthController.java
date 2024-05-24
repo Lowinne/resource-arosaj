@@ -9,7 +9,6 @@ import com.epsi.arosaj.service.MyUserDetailsService;
 import com.epsi.arosaj.service.RoleService;
 import com.epsi.arosaj.service.UserService;
 import com.epsi.arosaj.service.VilleService;
-import com.epsi.arosaj.web.controller.v1.UserControllerV1;
 import com.epsi.arosaj.web.exception.FindAnotherPseudoException;
 import com.epsi.arosaj.web.exception.ParameterMistakeException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -27,7 +26,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -67,7 +65,7 @@ public class AuthController {
         final MyUserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getUsername());
         final String jwt = jwtUtil.generateToken(userDetails.getUsername());
 
-        return ResponseEntity.ok(new AuthResponse(jwt));
+        return ResponseEntity.ok(new AuthResponse(jwt, userDetails.getUser()));
     }
 
     @Operation(summary = "Get all users")
