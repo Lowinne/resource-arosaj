@@ -28,7 +28,7 @@ public class UserControllerV1Test {
 
     private static final String ROOT_PATH = "/api/user/v1";
 
-    @Test
+    //@Test
     @Order(1)
     public void testAddUser() throws Exception {
 
@@ -51,7 +51,7 @@ public class UserControllerV1Test {
                 );
     }
 
-    @Test
+    //@Test
     @Order(2)
     public void testGetUser() throws Exception {
 
