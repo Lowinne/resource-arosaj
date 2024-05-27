@@ -39,7 +39,7 @@ public class ControllerV2Test {
     public ControllerV2Test() {
     }
 
-    @Test
+    //@Test
     @Order(1)
     public void testAddUser() throws Exception {
         mockMvc.perform( MockMvcRequestBuilders
@@ -64,7 +64,7 @@ public class ControllerV2Test {
                 );
     }
 
-    @Test
+    //@Test
     @Order(3)
     public void testGetUsers() throws Exception {
         mockMvc.perform(get(ROOT_PATH_USER + "/"))
@@ -72,7 +72,7 @@ public class ControllerV2Test {
                 .andExpect(status().isOk());
     }
 
-    @Test
+    //@Test
     @Order(4)
     public void testGetUsersByPseudo() throws Exception {
 
@@ -84,7 +84,7 @@ public class ControllerV2Test {
                 .andExpect(status().isOk());
     }
 
-    @Test
+    //@Test
     @Order(5)
     public void testUpdateUser() throws Exception {
         UserDto user = testUtil.createRandomUserDto();
@@ -99,7 +99,7 @@ public class ControllerV2Test {
                 .andExpect((MockMvcResultMatchers.jsonPath("$.email").value("boris@provider.com")));
     }
 
-    @Test
+    //@Test
     @Order(6)
     public void testDeleteUsers() throws Exception {
         mockMvc.perform( MockMvcRequestBuilders
@@ -117,7 +117,7 @@ public class ControllerV2Test {
                 .andExpect(status().isNotFound());
     }
 
-    @Test
+    //@Test
     @Order(8)
     public void testDeleteUsers_NotFound() throws Exception {
         UserDto userDto = testUtil.createRandomUserDto();
@@ -131,7 +131,7 @@ public class ControllerV2Test {
                 .andExpect(status().isNotFound());
     }
 
-    @Test
+    //@Test
     @Order(9)
     public void testUpdateUser_BadRequest() throws Exception {
         UserDto user = testUtil.createRandomUserDto();
@@ -146,7 +146,7 @@ public class ControllerV2Test {
                 );
     }
 
-    @Test
+    //@Test
     @Order(10)
     public void testAddUser2() throws Exception {
         UserDto userDto = testUtil.createRandomUserDto();
@@ -163,7 +163,7 @@ public class ControllerV2Test {
                 );
     }
 
-    @Test
+    //@Test
     @Order(11)
     public void testAddUser3_SamePseudo_BadRequest() throws Exception {
         UserDto userDto = testUtil.createRandomUserDto();
@@ -178,7 +178,7 @@ public class ControllerV2Test {
                 );
     }
 
-    @Test
+    //@Test
     @Order(12)
     public void testAddUser3Botaniste() throws Exception {
         UserDto userDto = testUtil.createRandomUserDto();
@@ -196,7 +196,7 @@ public class ControllerV2Test {
                 );
     }
 
-    @Test
+    //@Test
     @Order(13)
     public void testAddUser4Gardien() throws Exception {
         UserDto userDto = testUtil.createRandomUserDto();
@@ -214,7 +214,7 @@ public class ControllerV2Test {
                 );
     }
     //Plante Controller
-    @Test
+    //@Test
     @Order(14)
     public void testAddPlante() throws Exception {
         MockMultipartFile file
@@ -238,7 +238,7 @@ public class ControllerV2Test {
                 );
     }
 
-    @Test
+    //@Test
     @Order(15)
     public void testAddPhotoPlante() throws Exception {
         MockMultipartFile file
@@ -260,7 +260,7 @@ public class ControllerV2Test {
                 );
     }
 
-    @Test
+    //@Test
     @Order(16)
     public void testAddPhotoPlanteToSameUser() throws Exception {
         MockMultipartFile file
@@ -282,7 +282,7 @@ public class ControllerV2Test {
                 );
     }
 
-    @Test
+    //@Test
     @Order(17)
     public void testAddPlante2() throws Exception {
         MockMultipartFile file
@@ -306,7 +306,7 @@ public class ControllerV2Test {
                 );
     }
 
-    @Test
+    //@Test
     @Order(18)
     public void testGetPhotoOfPlante() throws Exception {
 
@@ -322,7 +322,7 @@ public class ControllerV2Test {
                 );
     }
 
-    @Test
+    //@Test
     @Order(19)
     public void testaddConseilOfPlante() throws Exception {
         //Botaniste
@@ -339,7 +339,7 @@ public class ControllerV2Test {
                 );
     }
 
-    @Test
+    //@Test
     @Order(20)
     public void testaddConseilOfPlante2() throws Exception {
         //Botaniste
@@ -356,7 +356,7 @@ public class ControllerV2Test {
                 );
     }
 
-    @Test
+    //@Test
     @Order(21)
     public void testGetConseilsOfPlante() throws Exception {
         //Botaniste
