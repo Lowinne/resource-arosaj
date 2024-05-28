@@ -26,6 +26,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -51,6 +52,9 @@ public class AuthController {
 
     @Autowired
     private MyUserDetailsService userDetailsService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @PostMapping("/login")
     public ResponseEntity<?> createToken(@RequestBody AuthRequest authRequest) throws Exception {
@@ -91,7 +95,7 @@ public class AuthController {
             //TODO : Email validator && Ville validator && Password
             user.setEmail(email);
             user.setRue(rue);
-            user.setPwd(pwd);
+            user.setPwd(passwordEncoder.encode(pwd));
             user.setRole(roleService.getRoleInTable(codeRole));
             user.setVille(villeService.ifNotExistSave(nomVille, codePostale));
             try{
