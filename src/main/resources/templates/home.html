@@ -291,6 +291,7 @@
                         listItem.textContent = `${plant.nom} - ${plant.description}`;
                         plantList.appendChild(listItem);
                     });
+                    
                 })
                 .catch(error => console.error('Error fetching plants:', error));
         }
