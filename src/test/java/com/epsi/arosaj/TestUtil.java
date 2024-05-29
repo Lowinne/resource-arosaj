@@ -4,14 +4,31 @@ import com.epsi.arosaj.persistence.dto.UserDto;
 import com.epsi.arosaj.persistence.model.Role;
 import com.epsi.arosaj.persistence.model.Utilisateur;
 import com.epsi.arosaj.persistence.model.Ville;
+import com.epsi.arosaj.service.RoleService;
+import com.epsi.arosaj.service.UserService;
+import com.epsi.arosaj.service.VilleService;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 @Service
 public class TestUtil {
+
+    @Autowired
+    private RoleService roleService;
+
+    @Autowired
+    private VilleService villeService;
+
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     private static final String API_ROOT = "http://localhost:8080/api/user";
 
@@ -67,4 +84,16 @@ public class TestUtil {
         return API_ROOT + "/" + response.jsonPath().get("id");
     }
 
+    public Utilisateur GetUserTest(){
+        Utilisateur user4 = new Utilisateur();
+        user4.setNom("PRINCE");
+        user4.setPrenom("Boris");
+        user4.setEmail("test");
+        user4.setPseudo("test");
+        user4.setPwd(passwordEncoder.encode("12345"));
+        user4.setRue("10 rue de la fournes");
+        user4.setRole(roleService.getRoleInTable("P"));
+        user4.setVille(villeService.ifNotExistSave("Paris", "75012"));
+        return user4;
+    }
 }

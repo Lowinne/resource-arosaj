@@ -264,7 +264,7 @@ public class UserService {
         user4.setPwd(passwordEncoder.encode("12345"));
         user4.setRue("10 rue de la fournes");
         user4.setRole(roleService.getRoleInTable("P"));
-        user4.setVille(villeService.ifNotExistSave(randomAlphabetic(5), "75012"));
+        user4.setVille(villeService.ifNotExistSave("Paris", "75012"));
 
         saveUserV1(user1);
         saveUserV1(user2);

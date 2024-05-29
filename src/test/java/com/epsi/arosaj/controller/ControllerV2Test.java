@@ -40,7 +40,7 @@ public class ControllerV2Test {
     }
 
     //@Test
-    @Order(1)
+    //@Order(1)
     public void testAddUser() throws Exception {
         mockMvc.perform( MockMvcRequestBuilders
                         .post(ROOT_PATH_USER + "/add")
