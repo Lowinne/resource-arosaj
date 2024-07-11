@@ -129,9 +129,9 @@ public class UserControllerV2 {
 
     @PostMapping(path = "/message/send")
     @Operation(summary = "send a message with pseudo/pwd verification, Proprietaire to gardien or gardien to Proprietaire")
-    public @ResponseBody MessageDto newMessage(@RequestHeader String senderPseudo, @RequestHeader String pwd, @RequestHeader String receiverPseudo, @RequestHeader String messageContent) throws JsonProcessingException {
+        public @ResponseBody MessageDto newMessage(@RequestHeader String senderPseudo, @RequestHeader String receiverPseudo, @RequestHeader String messageContent) throws JsonProcessingException {
 
-        Utilisateur sender = userService.findUserByPseudo(senderPseudo,pwd);
+        Utilisateur sender = userService.findByPseudo(senderPseudo).getFirst();
         if(sender != null){
             Utilisateur receiver = userService.findByPseudo(receiverPseudo).get(0);
             if(receiver != null){
@@ -148,8 +148,8 @@ public class UserControllerV2 {
 
     @GetMapping(path = "/message/get")
     @Operation(summary = "get all messages of user with pseudo/pwd verification")
-    public @ResponseBody List<MessageDto> getAllMessageOfUser(@RequestHeader String pseudo, @RequestHeader String pwd){
-        Utilisateur user = userService.findUserByPseudo(pseudo,pwd);
+    public @ResponseBody List<MessageDto> getAllMessageOfUser(@RequestHeader String pseudo){
+        Utilisateur user = userService.findByPseudo(pseudo).getFirst();
         List<MessageDto> listMessageOfUser = userService.getAllMessage().stream()
                 .filter(message -> message.getDestinataire().getPseudo().equals(user.getPseudo()) ||
                         message.getExpediteur().getPseudo().equals(user.getPseudo()))
