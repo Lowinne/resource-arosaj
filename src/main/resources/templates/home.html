@@ -1,7 +1,301 @@
+<!DOCTYPE html>
 <html xmlns:th="http://www.w3.org/1999/xhtml">
-<head><title>Home Page</title></head>
+<head>
+    <title>Admin Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background-color: #333;
+            color: #fff;
+            position: fixed;
+            left: 0;
+            top: 0;
+            padding: 20px;
+        }
+        .sidebar h2 {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        .sidebar a {
+            color: #fff;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            margin: 10px 0;
+            background-color: #444;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .sidebar a:hover {
+            background-color: #555;
+        }
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+        }
+        .header {
+            background-color: #333;
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+        }
+        .main {
+            margin-top: 20px;
+        }
+        .card {
+            background-color: #fff;
+            padding: 20px;
+            margin: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .card h3 {
+            margin-top: 0;
+        }
+        .button {
+            background-color: #333;
+            color: #fff;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #555;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input, .form-group textarea {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        .form-group textarea {
+            resize: vertical;
+        }
+    </style>
+</head>
 <body>
-<h1>Hello !</h1>
-<p>Welcome to <span th:text="${appName}">Our App</span></p>
+    <div class="sidebar">
+        <h2>Admin Dashboard</h2>
+        <a href="#users">Manage Users</a>
+        <a href="#plants">Manage Plants</a>
+        <a href="#reports">Reports</a>
+    </div>
+    <div class="content">
+        <div class="header">
+            <h1>Welcome to the Admin Dashboard</h1>
+            <p>Hello, <span th:text="${appName}">Our App</span></p>
+        </div>
+        <div class="main">
+            <div id="users" class="card">
+                <h3>Manage Users</h3>
+                <div>
+                    <h4>Create User</h4>
+                    <div class="form-group">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName">
+                    </div>
+                    <div class="form-group">
+                        <label for="pseudo">Pseudo</label>
+                        <input type="text" id="pseudo">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password">
+                    </div>
+                    <div class="form-group">
+                        <label for="rue">Street</label>
+                        <input type="text" id="rue">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" id="email">
+                    </div>
+                    <div class="form-group">
+                        <label for="nomVille">City</label>
+                        <input type="text" id="nomVille">
+                    </div>
+                    <div class="form-group">
+                        <label for="codePostale">Postal Code</label>
+                        <input type="text" id="codePostale">
+                    </div>
+                    <div class="form-group">
+                        <label for="codeRole">Role Code</label>
+                        <input type="text" id="codeRole">
+                    </div>
+                    <button class="button" onclick="createUser()">Create User</button>
+                </div>
+                <h4>All Users</h4>
+                <button class="button" onclick="fetchUsers()">Fetch Users</button>
+                <ul id="userList"></ul>
+            </div>
+            <div id="plants" class="card">
+                <h3>Manage Plants</h3>
+                <div>
+                    <h4>Add Plant</h4>
+                    <div class="form-group">
+                        <label for="plantPseudo">Pseudo</label>
+                        <input type="text" id="plantPseudo">
+                    </div>
+                    <div class="form-group">
+                        <label for="plantPwd">Password</label>
+                        <input type="password" id="plantPwd">
+                    </div>
+                    <div class="form-group">
+                        <label for="plantName">Plant Name</label>
+                        <input type="text" id="plantName">
+                    </div>
+                    <div class="form-group">
+                        <label for="plantDesc">Description</label>
+                        <textarea id="plantDesc"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="plantImage">Plant Image</label>
+                        <input type="file" id="plantImage">
+                    </div>
+                    <button class="button" onclick="addPlant()">Add Plant</button>
+                </div>
+                <h4>All Plants</h4>
+                <button class="button" onclick="fetchPlants()">Fetch Plants</button>
+                <ul id="plantList"></ul>
+            </div>
+            <div id="reports" class="card">
+                <h3>Reports</h3>
+                <!-- Add reports functionality here -->
+            </div>
+        </div>
+    </div>
+    <script>
+        function fetchUsers() {
+            fetch('/api/user/v2/')
+                .then(response => response.json())
+                .then(data => {
+                    const userList = document.getElementById('userList');
+                    userList.innerHTML = '';
+                    data.forEach(user => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `${user.pseudo} - ${user.email}`;
+                        const deleteButton = document.createElement('button');
+                        deleteButton.textContent = 'Delete';
+                        deleteButton.onclick = () => deleteUser(user.id);
+                        listItem.appendChild(deleteButton);
+                        userList.appendChild(listItem);
+                    });
+                })
+                .catch(error => console.error('Error fetching users:', error));
+        }
+
+        function createUser() {
+            const firstName = document.getElementById('firstName').value;
+            const lastName = document.getElementById('lastName').value;
+            const pseudo = document.getElementById('pseudo').value;
+            const password = document.getElementById('password').value;
+            const rue = document.getElementById('rue').value;
+            const email = document.getElementById('email').value;
+            const nomVille = document.getElementById('nomVille').value;
+            const codePostale = document.getElementById('codePostale').value;
+            const codeRole = document.getElementById('codeRole').value;
+
+            fetch('/api/user/v2/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    firstName: firstName,
+                    lastName: lastName,
+                    pseudo: pseudo,
+                    pwd: password,
+                    rue: rue,
+                    email: email,
+                    nomVille: nomVille,
+                    codePostale: codePostale,
+                    codeRole: codeRole
+                })
+            })
+                .then(response => response.json())
+                .then(user => {
+                    alert(`User created: ${user.pseudo}`);
+                    fetchUsers();
+                })
+                .catch(error => console.error('Error creating user:', error));
+        }
+
+        function deleteUser(userId) {
+            fetch(`/api/user/v2/delete/${userId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ id: userId })
+            })
+                .then(response => response.text())
+                .then(message => {
+                    alert(message);
+                    fetchUsers();
+                })
+                .catch(error => console.error('Error deleting user:', error));
+        }
+
+        function addPlant() {
+            const plantPseudo = document.getElementById('plantPseudo').value;
+            const plantPwd = document.getElementById('plantPwd').value;
+            const plantName = document.getElementById('plantName').value;
+            const plantDesc = document.getElementById('plantDesc').value;
+            const plantImage = document.getElementById('plantImage').files[0];
+
+            const formData = new FormData();
+            formData.append('file', plantImage);
+            formData.append('pseudo', plantPseudo);
+            formData.append('userPwd', plantPwd);
+            formData.append('nom', plantName);
+            formData.append('desc', plantDesc);
+
+            fetch('/api/plante/v2/add', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.json())
+                .then(plant => {
+                    alert(`Plant added: ${plant.nom}`);
+                    fetchPlants();
+                })
+                .catch(error => console.error('Error adding plant:', error));
+        }
+
+        function fetchPlants() {
+            fetch('/api/plante/v2/all')
+                .then(response => response.json())
+                .then(data => {
+                    const plantList = document.getElementById('plantList');
+                    plantList.innerHTML = '';
+                    data.forEach(plant => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `${plant.nom} - ${plant.description}`;
+                        plantList.appendChild(listItem);
+                    });
+                    
+                })
+                .catch(error => console.error('Error fetching plants:', error));
+        }
+    </script>
 </body>
 </html>

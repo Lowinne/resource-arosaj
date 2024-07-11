@@ -20,6 +20,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -27,6 +28,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -109,5 +111,14 @@ public class AuthController {
             throw new FindAnotherPseudoException("Le pseudo est déjà utilisé");
         }
     }
+
+    // @Value("${spring.application.name}")
+    // String appName;
+
+    // @GetMapping("/home")
+    // public String homePage(Model model) {
+    //     model.addAttribute("appName", appName);
+    //     return "home";
+    // }
 
 }
